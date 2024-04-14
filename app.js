@@ -13,7 +13,7 @@ import usersRouter from './routes/users.js';
 
 const app = express();
 
-mongoose.connect('mongodb+srv://kelvin80121:Ml6mJpq9hmFPH2jC@data.vgi0fxb.mongodb.net/data')
+mongoose.connect(`mongodb+srv://kelvin80121:${process.env.DB_CONNECTION_STRING}@data.vgi0fxb.mongodb.net/data`)
   .then(res=> console.log("連線資料成功"))
   .catch(err=> console.log("連線資料失敗"));
 
