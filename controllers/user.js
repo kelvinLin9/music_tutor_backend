@@ -4,26 +4,37 @@ import UsersModel from '../models/user.js'
 import { generateToken, verifyToken } from '../utils/index.js';
 
 const signup = async (req, res, next) => {
-    try {
-        const { email, password } = req.body;
-        const checkEmail = await UsersModel.findOne({ email });
-        if (checkEmail) {
-            throw createHttpError(400, '此 Email 已註冊');
-        }
+  try {
+      const { email, password, confirmPassword, name } = req.body;
+      
+      if (password !== confirmPassword) {
+          throw createHttpError(400, '兩次輸入的密碼不匹配');
+      }
 
-        const hashedPassword = await bcrypt.hash(password, 6);
-        const user = await UsersModel.create({
-            email,
-            password: hashedPassword
-        });
+      // 檢查郵箱是否已經註冊
+      const checkEmail = await UsersModel.findOne({ email });
+      if (checkEmail) {
+          throw createHttpError(400, '此 Email 已註冊');
+      }
 
-        res.send({
-            status: true,
-            token: generateToken({ userId: user._id })
-        });
-    } catch (error) {
-        next(error);
-    }
+      // 密碼加密
+      const hashedPassword = await bcrypt.hash(password, 6);
+
+      // 創建用戶記錄
+      const user = await UsersModel.create({
+          name,
+          email,
+          password: hashedPassword
+      });
+
+      // 發送帶有 token 的響應
+      res.send({
+          status: true,
+          token: generateToken({ userId: user._id })
+      });
+  } catch (error) {
+      next(error);
+  }
 };
 
 const login = async (req, res, next) => {
