@@ -13,13 +13,17 @@ export const createCourse = async (req, res, next) => {
 
 export const getCourse = async (req, res, next) => {
   try {
-    const course = await Course.findById(req.params.id);
+    const course = await Course.findById(req.params.id)
+      .populate('instructor', 'name') // 關聯載入授課教師的姓名
+      .exec();
+
     if (!course) throw createHttpError(404, '課程未找到');
     res.json(course);
   } catch (error) {
     next(error);
   }
 };
+
 
 export const updateCourse = async (req, res, next) => {
   try {
@@ -46,9 +50,22 @@ export const deleteCourse = async (req, res, next) => {
 
 export const getAllCourses = async (req, res, next) => {
   try {
-    const courses = await Course.find({});
+    const courses = await Course.find({})
+      .populate('instructor', 'name') // 在每個課程中關聯載入授課教師的姓名
+      .exec();
+
     res.json(courses);
   } catch (error) {
     next(error);
   }
 };
+
+
+// export const getAllCourses = async (req, res, next) => {
+//   try {
+//     const courses = await Course.find({});
+//     res.json(courses);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
