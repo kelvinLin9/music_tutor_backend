@@ -1,5 +1,12 @@
 import { Router } from 'express';
-import { login, signup, forget, check, getInfo, updateInfo  } from '../controllers/user.js';
+import { 
+  login, 
+  signup,
+  forget,
+  check,
+  getInfo,
+  updateInfo 
+} from '../controllers/user.js';
 import { checkRequestBodyValidator, isAuth } from '../middlewares/index.js';
 
 const router = Router();
