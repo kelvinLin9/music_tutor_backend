@@ -32,7 +32,7 @@ const courseSchema = new Schema({
       message: '上課模式不正確'
     }
   },
-  minute: {
+  minutes: {
     type: Number,
     required: [true, '上課時間未填寫'],
     min: [0, '上課時間不能為負數']
