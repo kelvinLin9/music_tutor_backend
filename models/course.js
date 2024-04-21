@@ -33,8 +33,9 @@ const courseSchema = new Schema({
     }
   },
   time: {
-    type: Date,
-    required: [true, '開課時間未填寫'],
+    type: Number,
+    required: [true, '上課時間未填寫'],
+    min: [0, '上課時間不能為負數']
   },
   price: {
     type: Number,
@@ -50,6 +51,16 @@ const courseSchema = new Schema({
       },
       message: '圖片連結格式不正確'
     }
+  },
+  imgList: {
+    type: [String], 
+    validate: {
+      validator: function(value) {
+        // 確保每個陣列元素都是有效的URL
+        return value.every(url => validator.isURL(url));
+      },
+      message: '圖片列表中包含無效的圖片連結'
+    },
   }
 }, {
   versionKey: false,
