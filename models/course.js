@@ -64,7 +64,7 @@ const courseSchema = new Schema({
   },
   instructor: {
     type: Schema.Types.ObjectId, // 定義為ObjectId
-    ref: 'user', // 引用'user'模型
+    ref: 'User', // 引用'user'模型
     required: [true, '老師ID未填寫']
   },
 }, {
