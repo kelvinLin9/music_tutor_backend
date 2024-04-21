@@ -11,6 +11,7 @@ import mongoose from 'mongoose';
 // import indexRouter from './routes/index.js';
 import usersRouter from './routes/users.js';
 import courseRouter from './routes/course.js';
+import verifyRouter from './routes/verify.js';
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use(cookieParser());
 
 app.use('/courses', courseRouter);
 app.use('/users', usersRouter);
+app.use('/verify', verifyRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
