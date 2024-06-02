@@ -99,7 +99,7 @@ const getUsersInfo = async (req, res, next) => {
         const token = req.headers.authorization?.replace('Bearer ', '');
         const payload = verifyToken(token);
 
-        if (!payload || !payload.isAdmin) {
+        if (!payload) {
             throw createHttpError(403, '無訪問權限');
         }
 
