@@ -6,8 +6,8 @@ import {
   check,
   getUsers,
   updateInfo 
-} from '../controllers/user.js';
-import { checkRequestBodyValidator, isAuth } from '../middlewares/index.js';
+} from '../../controllers/user.js';
+import { checkRequestBodyValidator, isAuth } from '../../middlewares/index.js';
 
 const router = Router();
 
