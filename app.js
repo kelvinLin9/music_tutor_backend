@@ -13,6 +13,9 @@ import usersRouter from './routes/users.js';
 import courseRouter from './routes/course.js';
 import verifyRouter from './routes/verify.js';
 
+// admin
+import adminUsersRouter from './routes/admin/users.js';
+
 const app = express();
 
 mongoose.connect(`mongodb+srv://kelvin80121:${process.env.DB_CONNECTION_STRING}@data.vgi0fxb.mongodb.net/data`)
@@ -33,6 +36,9 @@ app.use(cookieParser());
 app.use('/courses', courseRouter);
 app.use('/users', usersRouter);
 app.use('/verify', verifyRouter);
+
+// admin
+app.use('/admin/users', adminUsersRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

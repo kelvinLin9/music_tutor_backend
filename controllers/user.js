@@ -88,6 +88,7 @@ const forget = async (req, res, next) => {
 const check = async (req, res) => {
   try {
       const token = req.headers.authorization?.replace('Bearer ', '');
+      const payload = verifyToken(token);
       if (!token) {
           throw createHttpError(404, 'Token not found');
       }
@@ -101,26 +102,26 @@ const check = async (req, res) => {
 };
 
 
-const getUsersInfo = async (req, res, next) => {
-    try {
-        // 檢查用戶是否登入且擁有管理者權限
-        const token = req.headers.authorization?.replace('Bearer ', '');
-        const payload = verifyToken(token);
+// const getUserInfo = async (req, res, next) => {
+//     try {
+//         // 檢查用戶是否登入且擁有管理者權限
+//         const token = req.headers.authorization?.replace('Bearer ', '');
+//         const payload = verifyToken(token);
 
-        if (!payload) {
-            throw createHttpError(403, '無訪問權限');
-        }
+//         if (!payload) {
+//             throw createHttpError(403, '無訪問權限');
+//         }
 
-        // 從數據庫提取所有用戶資訊
-        const users = await UsersModel.find({}).select('-password');  // 確保不返回密碼字段
-        res.send({
-            status: true,
-            users
-        });
-    } catch (error) {
-        next(error);
-    }
-};
+//         // 從數據庫提取所有用戶資訊
+//         const users = await UsersModel.find({}).select('-password');  // 確保不返回密碼字段
+//         res.send({
+//             status: true,
+//             users
+//         });
+//     } catch (error) {
+//         next(error);
+//     }
+// };
 
 
 const updateInfo = async (req, res, next) => {
@@ -148,11 +149,35 @@ const updateInfo = async (req, res, next) => {
     }
 };
 
+
+
+// admin
+const getUsers = async (req, res, next) => {
+  try {
+      // 檢查用戶是否登入且擁有管理者權限
+      const token = req.headers.authorization?.replace('Bearer ', '');
+      const payload = verifyToken(token);
+
+      if (!payload) {
+          throw createHttpError(403, '無訪問權限');
+      }
+
+      // 從數據庫提取所有用戶資訊
+      const users = await UsersModel.find({}).select('-password');  // 確保不返回密碼字段
+      res.send({
+          status: true,
+          users
+      });
+  } catch (error) {
+      next(error);
+  }
+};
+
 export {
     signup,
     login,
     forget,
     check,
-    getUsersInfo,
+    getUsers,
     updateInfo
 };
