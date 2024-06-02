@@ -4,6 +4,7 @@ import UsersModel from '../models/user.js'
 import { generateToken, verifyToken } from '../utils/index.js';
 
 const signup = async (req, res, next) => {
+  console.log(req.body)
   try {
       const { email, password, confirmPassword, name } = req.body;
       
