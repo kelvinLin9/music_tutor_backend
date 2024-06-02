@@ -16,7 +16,7 @@ router.use(checkRequestBodyValidator);
 // router.post('/signup', signup);
 // router.post('/forgot', forget);
 // router.get('/check', isAuth, check);
-router.get('/', isAuth, getUsersInfo);
+router.get('/', isAuth, getUsers);
 router.put('/', isAuth, updateInfo);
 
 

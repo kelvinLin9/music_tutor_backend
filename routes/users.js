@@ -4,7 +4,7 @@ import {
   signup,
   forget,
   check,
-  getUsersInfo,
+  // getUser,
   updateInfo 
 } from '../controllers/user.js';
 import { checkRequestBodyValidator, isAuth } from '../middlewares/index.js';
@@ -123,7 +123,7 @@ router.get('/check', isAuth, check);
  */
 
 // 取得使用者資訊
-router.get('/', isAuth, getUsersInfo);
+// router.get('/', isAuth, getUser);
 /**
  * #swagger.description = "取得使用者資訊"
  * #swagger.responses[200] = {
