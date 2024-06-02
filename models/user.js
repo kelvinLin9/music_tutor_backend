@@ -32,10 +32,19 @@ const userSchema = new Schema({
     address: {
         detail: String
     },
+    courses: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Courses'
+    }],
+    userRole: {
+      type: String,
+      enum: ['admin', 'user'],
+      default: 'user'
+    },
     verificationToken: {
-        type: String,
-        default: '',
-        select: false
+      type: String,
+      default: '',
+      select: false
     }
 }, {
     versionKey: false,
