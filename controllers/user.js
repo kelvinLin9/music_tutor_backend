@@ -86,12 +86,20 @@ const forget = async (req, res, next) => {
 };
 
 const check = async (req, res) => {
-    const token = `${req.headers.authorization?.replace('Bearer ', '')}`;
-    res.send({
-        status: true,
-        token
-    });
+  try {
+      const token = req.headers.authorization?.replace('Bearer ', '');
+      if (!token) {
+          throw createHttpError(404, 'Token not found');
+      }
+      res.send({
+          status: true,
+          token
+      });
+  } catch (error) {
+      res.status(500).send({ status: false, message: error.message });
+  }
 };
+
 
 const getUsersInfo = async (req, res, next) => {
     try {
