@@ -93,12 +93,27 @@ const check = async (req, res) => {
     });
 };
 
-const getInfo = async (req, res) => {
-    res.send({
-        status: true,
-        result: req.user
-    });
+const getUsersInfo = async (req, res, next) => {
+    try {
+        // 檢查用戶是否登入且擁有管理者權限
+        const token = req.headers.authorization?.replace('Bearer ', '');
+        const payload = verifyToken(token);
+
+        if (!payload || !payload.isAdmin) {
+            throw createHttpError(403, '無訪問權限');
+        }
+
+        // 從數據庫提取所有用戶資訊
+        const users = await UsersModel.find({}).select('-password');  // 確保不返回密碼字段
+        res.send({
+            status: true,
+            users
+        });
+    } catch (error) {
+        next(error);
+    }
 };
+
 
 const updateInfo = async (req, res, next) => {
     try {
@@ -130,6 +145,6 @@ export {
     login,
     forget,
     check,
-    getInfo,
+    getUsersInfo,
     updateInfo
 };
