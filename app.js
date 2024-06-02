@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import createError from 'http-errors';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
@@ -17,6 +16,18 @@ import verifyRouter from './routes/verify.js';
 import adminUsersRouter from './routes/admin/users.js';
 
 const app = express();
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception: ', err);
+  // 記錄錯誤後，進行重啟或終止程序，取決於應用程式需求
+  process.exit(1); // 退出程序
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  // 處理邏輯，例如記錄錯誤或發送警報
+});
+
 
 mongoose.connect(`mongodb+srv://kelvin80121:${process.env.DB_CONNECTION_STRING}@data.vgi0fxb.mongodb.net/data`)
   .then(res=> console.log("連線資料成功"))
@@ -40,20 +51,34 @@ app.use('/verify', verifyRouter);
 // admin
 app.use('/admin/users', adminUsersRouter);
 
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
-  next(createError(404));
-});
 
-// error handler
 app.use((err, req, res, next) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  const statusCode = err.status || 500;
 
-  // As the view engine is not set, the error page rendering is disabled.
-  res.status(err.status || 500);
-  res.json({ error: err.message }); // Directly return JSON for errors.
+  // 如果是開發環境，返回詳細的錯誤信息
+  if (isDevelopment) {
+      res.status(statusCode).json({
+          success: false,
+          error: {
+              message: err.message,
+              stack: err.stack
+          }
+      });
+  } else {
+      // 在生產環境中，隱藏錯誤細節，返回通用錯誤信息
+      res.status(statusCode).json({
+          success: false,
+          message: 'An internal server error occurred.'
+      });
+  }
 });
 
+// 修正404 Not Found中間件
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'Resource not found'
+  });
+});
 export default app;
