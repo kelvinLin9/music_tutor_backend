@@ -86,7 +86,7 @@ const forget = async (req, res, next) => {
 };
 
 const check = async (req, res) => {
-    const token = req.headers.authorization?.replace('Bearer ', '');
+    const token = `${req.headers.authorization?.replace('Bearer ', '')}`;
     res.send({
         status: true,
         token
