@@ -9,7 +9,7 @@ const signup = async (req, res, next) => {
       const { email, password, confirmPassword, name } = req.body;
       
       if (!name) {
-        throw createHttpError(400, '姓名為必填欄位');
+        throw createHttpError(400, '姓名為必填欄位', req.body);
     }
     
       if (password !== confirmPassword) {
