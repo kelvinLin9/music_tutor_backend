@@ -57,7 +57,7 @@ app.use((err, req, res, next) => {
   const statusCode = err.status || 500;
 
   // 如果是開發環境，返回詳細的錯誤信息
-  if (isDevelopment) {
+  if (!isDevelopment) {
       res.status(statusCode).json({
           success: false,
           error: {
