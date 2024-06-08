@@ -9,13 +9,8 @@ const signup = async (req, res, next) => {
       const { email, password, confirmPassword, name } = req.body;
       
       if (!name) {
-<<<<<<< HEAD
         throw createHttpError(400, '姓名為必填欄位');
-      }
-=======
-        throw createHttpError(400, '姓名為必填欄位', req.body);
     }
->>>>>>> 20761b65053572bf2973f6105ef7e071420e68f1
     
       if (password !== confirmPassword) {
           throw createHttpError(400, '兩次輸入的密碼不匹配');
