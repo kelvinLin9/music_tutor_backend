@@ -46,6 +46,7 @@ const userSchema = new Schema({
     gender: {
         type: String,
         enum: ['男', '女', '雙性'],
+        default: '雙性',
         required: [true, '性別未填寫']
     },
     courses: [{
