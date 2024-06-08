@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import validator from 'validator';
+import bcrypt from 'bcryptjs';
 
 const userSchema = new Schema({
     name: {
@@ -14,23 +15,30 @@ const userSchema = new Schema({
     email: {
         type: String,
         required: [true, 'email 未填寫'],
+        unique: true,
+        index: true,
         validate: {
             validator: function(value) {
                 return validator.isEmail(value);
             },
             message: 'Email 格式不正確'
-        },
-        unique: true
+        }
     },
     password: {
         type: String,
         required: [true, 'password 未填寫'],
+        minlength: 8,
         select: false
     },
     phone: String,
     birthday: Date,
     address: {
         detail: String
+    },
+    gender: {
+        type: String,
+        enum: ['男', '女', '雙性'],
+        required: [true, '性別未填寫']
     },
     courses: [{
       type: Schema.Types.ObjectId,
@@ -50,5 +58,12 @@ const userSchema = new Schema({
     versionKey: false,
     timestamps: true
 });
+
+// userSchema.pre('save', async function(next) {
+//     if (!this.isModified('password')) return next();
+//     this.password = await bcrypt.hash(this.password, 12);
+//     this.email = this.email.toLowerCase().trim();
+//     next();
+// });
 
 export default model('User', userSchema);
