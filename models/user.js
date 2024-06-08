@@ -30,7 +30,15 @@ const userSchema = new Schema({
         minlength: 8,
         select: false
     },
-    phone: String,
+    phone: {
+      type: String,
+      validate: {
+          validator: function(value) {
+              return validator.isMobilePhone(value, 'any', { strictMode: false });
+          },
+          message: '手機號碼格式不正確'
+      }
+    },
     birthday: Date,
     address: {
         detail: String
@@ -44,7 +52,7 @@ const userSchema = new Schema({
       type: Schema.Types.ObjectId,
       ref: 'Courses'
     }],
-    userRole: {
+    role: {
       type: String,
       enum: ['admin', 'user'],
       default: 'user'

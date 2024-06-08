@@ -5,7 +5,8 @@ import {
   forget,
   check,
   // getUser,
-  updateInfo 
+  updateInfo,
+  updateRole,
 } from '../controllers/user.js';
 import { checkRequestBodyValidator, isAuth } from '../middlewares/index.js';
 
@@ -172,5 +173,5 @@ router.put('/', isAuth, updateInfo);
  *     }
  * }
  */
-
+router.put('update-role', isAuth, updateRole)
 export default router;

@@ -1,13 +1,21 @@
 import createHttpError from 'http-errors';
 import jsonWebToken from 'jsonwebtoken';
 
-export const generateToken = (payload) => {
-    if (!process.env.JWT_SECRET || !process.env.JWT_EXPIRES_DAY) {
-        throw new Error("Required JWT environment variables are not set.");
-    }
-    return jsonWebToken.sign(payload, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_DAY
-    });
+export const generateToken = (user) => {
+  if (!process.env.JWT_SECRET || !process.env.JWT_EXPIRES_DAY) {
+      throw new Error("Required JWT environment variables are not set.");
+  }
+
+  // 生成 payload，包括用戶 ID 和角色
+  const payload = {
+      userId: user._id,
+      role: user.role  // 假設 user 對象中有 role 屬性
+  };
+
+  // 簽名 token
+  return jsonWebToken.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_DAY
+  });
 };
 
 export const verifyToken = (token) => {

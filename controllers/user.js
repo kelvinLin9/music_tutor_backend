@@ -6,44 +6,37 @@ import { generateToken, verifyToken } from '../utils/index.js';
 import { handleErrorAsync} from '../statusHandle/handleErrorAsync.js';
 
 
-const signup = async (req, res, next) => {
-  console.log(req.body)
-  try {
-      const { email, password, confirmPassword, name } = req.body;
-      
-      if (!name) {
-        throw createHttpError(400, '姓名為必填欄位');
-    }
-    
-      if (password !== confirmPassword) {
-          throw createHttpError(400, '兩次輸入的密碼不匹配');
-      }
+const signup = handleErrorAsync(async (req, res, next) => {
+  const { email, password, confirmPassword, name, role = 'user' } = req.body;
 
-      // 檢查郵箱是否已經註冊
-      const checkEmail = await UsersModel.findOne({ email });
-      if (checkEmail) {
-          throw createHttpError(400, '此 Email 已註冊');
-      }
-
-      // 密碼加密
-      const hashedPassword = await bcrypt.hash(password, 6);
-
-      // 創建用戶記錄
-      const user = await UsersModel.create({
-          name,
-          email,
-          password: hashedPassword
-      });
-
-      // 發送帶有 token 的響應
-      res.send({
-          status: true,
-          token: generateToken({ userId: user._id })
-      });
-  } catch (error) {
-      next(error);
+  if (!name) {
+      throw createHttpError(400, '姓名為必填欄位');
   }
-};
+  if (password !== confirmPassword) {
+      throw createHttpError(400, '兩次輸入的密碼不匹配');
+  }
+
+  const checkEmail = await UsersModel.findOne({ email });
+  if (checkEmail) {
+      throw createHttpError(400, '此 Email 已註冊');
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 6);
+
+  const user = await UsersModel.create({
+      name,
+      email,
+      password: hashedPassword,
+      role
+  });
+
+  res.send({
+      status: true,
+      token: generateToken({ userId: user._id, role: user.role })
+  });
+});
+
+
 
 const login = async (req, res, next) => {
     try {
@@ -198,11 +191,32 @@ const getUsers = async (req, res, next) => {
   }
 };
 
+const updateRole = handleErrorAsync(async (req, res, next) => {
+  // 從請求中獲取新的角色信息
+  const { newRole } = req.body;
+
+  // 更新數據庫中的用戶角色
+  await UsersModel.updateOne({ _id: req.user.userId }, { role: newRole });
+
+  // 生成新的 token
+  const newUserDetails = await UsersModel.findByIdAndUpdate(req.user.userId, { role: newRole }, { new: true });
+  if (!newUserDetails) {
+      return res.status(404).json({ success: false, message: "User not found" });
+  }
+  const newToken = generateToken({ userId: newUserDetails._id, role: newUserDetails.role });
+  
+
+  // 返回新的 token
+  res.json({ success: true, token: newToken });
+
+})
+
 export {
     signup,
     login,
     forget,
     check,
     getUsers,
-    updateInfo
+    updateInfo,
+    updateRole,
 };

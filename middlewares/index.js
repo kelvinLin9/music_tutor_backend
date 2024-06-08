@@ -3,19 +3,34 @@ import validator from 'validator';
 import { verifyToken } from '../utils/index.js';
 
 // token 驗證
-export const isAuth = async (req, _res, next) => {
-    try {
-        const token = `${req.headers.authorization?.replace('Bearer ', '')}`;
-        verifyToken(token); // 驗證Token，但不進行用戶查找
-        next();
-    } catch (error) {
-        next(error);
-    }
+export const isAuth = async (req, res, next) => {
+  try {
+      const token = req.headers.authorization?.split(' ')[1]; // 更標準的獲取方式
+      const decoded = verifyToken(token); // 假設 verifyToken 返回解碼的 token
+      req.user = decoded; // 將解碼的 token 信息存儲在 req.user 中以便後續使用
+      next();
+  } catch (error) {
+      next(createHttpError(401, '認證失敗：無效的 Token')); // 提供更明確的錯誤信息
+  }
 };
 
 // 實作管理員權限（這部分需要後續完善）
 export const isAdmin = async (req, res, next) => {
-    isAuth(req, res, next);
+  isAuth(req, res, async (err) => {
+      if (err) {
+          return next(err); // 如果認證中間件遇到錯誤，直接將錯誤傳遞下去
+      }
+
+      try {
+          // 檢查 req.user 中是否有角色資訊並且角色是否為 'admin'
+          if (req.user.role !== 'admin') {
+              throw createHttpError(403, '授權失敗：您不具備管理員權限');
+          }
+          next();
+      } catch (error) {
+          next(error);
+      }
+  });
 };
 
 export const checkRequestBodyValidator = (req, _res, next) => {
