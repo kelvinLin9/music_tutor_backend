@@ -124,7 +124,7 @@ router.get('/check', isAuth, check);
  */
 
 // 取得使用者資訊
-router.get('/', isAuth, getUser);
+router.get('/profile', isAuth, getUser);
 /**
  * #swagger.description = "取得使用者資訊"
  * #swagger.responses[200] = {
@@ -142,7 +142,7 @@ router.get('/', isAuth, getUser);
  */
 
 // 更新使用者資訊
-router.put('/', isAuth, updateInfo);
+router.put('/profile', isAuth, updateInfo);
 /**
  * #swagger.description = "更新使用者資訊"
  * #swagger.parameters['body'] = {

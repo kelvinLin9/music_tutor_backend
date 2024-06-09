@@ -105,21 +105,11 @@ const check = async (req, res) => {
 
 const getUser = async (req, res, next) => {
     try {
-        // 檢查用戶是否登入且擁有管理者權限
-        const token = req.headers.authorization?.replace('Bearer ', '');
-        const payload = verifyToken(token);
-        // 根據 ID 從數據庫提取單個用戶資訊
-        const userId = req.params.userId; // 假設用戶 ID 從 URL 參數中獲取
-        const user = await UsersModel.findById(userId).select('-password');  // 確保不返回密碼字段
-
-        if (!user) {
-            throw createHttpError(404, '用戶未找到');
-        }
-
-        res.send({
-            status: true,
-            user
-        });
+      const user = await UsersModel.findById(req.user.userId);
+      res.send({
+          status: true,
+          result: user
+      });
     } catch (error) {
         next(error);
     }
