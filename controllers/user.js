@@ -127,10 +127,11 @@ const updateInfo = handleErrorAsync(async (req, res, next) => {
   const { name, photo } = req.body;
 
   const userId = req.user.userId;
-  // const updateData = { name, photo };
+//   const updateData = { name, photo };
+  const updateData = req.body;
   
   // 移除未定義的字段
-  // Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
+  Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
 
   if (name && !validator.isLength(name, { min: 2 })) {
       throw createHttpError(400, 'name 至少需要 2 個字元以上');
