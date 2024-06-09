@@ -4,7 +4,7 @@ import {
   signup,
   forget,
   check,
-  // getUser,
+  getUser,
   updateInfo,
   updateRole,
 } from '../controllers/user.js';
@@ -124,7 +124,7 @@ router.get('/check', isAuth, check);
  */
 
 // 取得使用者資訊
-// router.get('/', isAuth, getUser);
+router.get('/', isAuth, getUser);
 /**
  * #swagger.description = "取得使用者資訊"
  * #swagger.responses[200] = {
