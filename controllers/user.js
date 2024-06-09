@@ -93,9 +93,8 @@ const check = async (req, res) => {
       res.send({
           status: true,
           token,
-          userId: req.user,
+          userId: req.user.userId,
           role: payload.role,
-          payload
       });
   } catch (error) {
       res.status(401).send({ status: false, message: error.message });
