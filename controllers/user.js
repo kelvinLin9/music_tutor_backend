@@ -85,17 +85,17 @@ const forget = async (req, res, next) => {
 const check = async (req, res) => {
   try {
       const token = req.headers.authorization?.replace('Bearer ', '');
-      if (!token) {
-          throw createHttpError(404, 'Token not found');
-      }
       const payload = verifyToken(token);  // 最好在確認 token 存在之後再進行驗證
+      if (!payload) {
+        throw createHttpError(403, '無訪問權限');
+    }
       res.send({
           status: true,
           token,
           role: payload.role  // 假設 payload 中包含了 role 信息
       });
   } catch (error) {
-      res.status(500).send({ status: false, message: error.message });
+      res.status(401).send({ status: false, message: error.message });
   }
 };
 
