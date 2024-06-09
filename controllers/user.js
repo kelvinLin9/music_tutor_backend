@@ -53,7 +53,7 @@ const login = async (req, res, next) => {
 
         res.send({
             status: true,
-            user,
+            user: user._id,
             token: generateToken({ userId: user._id, role: user.role })
         });
     } catch (error) {
@@ -94,6 +94,7 @@ const check = async (req, res) => {
           status: true,
           token,
           userId: payload.userId,
+          userIdd: payload.user._id,
           role: payload.role,
           payload
       });
