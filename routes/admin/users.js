@@ -8,10 +8,6 @@ import { checkRequestBodyValidator, isAuth } from '../../middlewares/index.js';
 const router = Router();
 
 router.use(checkRequestBodyValidator);
-// router.post('/login', login);
-// router.post('/signup', signup);
-// router.post('/forgot', forget);
-// router.get('/check', isAuth, check);
 router.get('/', isAuth, getUsers);
 router.put('/', isAuth, updateInfo);
 
