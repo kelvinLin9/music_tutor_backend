@@ -94,7 +94,6 @@ const check = async (req, res) => {
           status: true,
           token,
           userId: payload.userId,
-          userIdd: payload.user._id,
           role: payload.role,
           payload
       });
