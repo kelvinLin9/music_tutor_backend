@@ -92,7 +92,8 @@ const check = async (req, res) => {
       res.send({
           status: true,
           token,
-          role: payload.role  // 假設 payload 中包含了 role 信息
+          userId: payload.userId,
+          role: payload.role
       });
   } catch (error) {
       res.status(401).send({ status: false, message: error.message });
