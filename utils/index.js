@@ -7,8 +7,7 @@ export const generateToken = (user) => {
   }
 
   // 生成 payload，包括用戶 ID 和角色
-  const payload = {
-      fq:'fqqqq',      
+  const payload = {      
       userId: user._id,
       role: user.role  // 假設 user 對象中有 role 屬性
   };
