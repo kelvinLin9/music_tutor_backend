@@ -93,7 +93,7 @@ const check = async (req, res) => {
       res.send({
           status: true,
           token,
-          userId: payload.user._id,
+          userId: payload.userId,
           role: payload.role,
           payload
       });
