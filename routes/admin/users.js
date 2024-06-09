@@ -1,9 +1,5 @@
 import { Router } from 'express';
 import { 
-  login, 
-  signup,
-  forget,
-  check,
   getUsers,
   updateInfo 
 } from '../../controllers/user.js';
@@ -21,5 +17,3 @@ router.put('/', isAuth, updateInfo);
 
 
 export default router;
-https://music-tutor-backend.onrender.com/users/ckeck
-https://music-tutor-backend.onrender.com/users/login
