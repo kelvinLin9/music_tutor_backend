@@ -53,6 +53,7 @@ const login = async (req, res, next) => {
 
         res.send({
             status: true,
+            user,
             token: generateToken({ userId: user._id, role: user.role })
         });
     } catch (error) {
@@ -90,7 +91,7 @@ const check = async (req, res) => {
         throw createHttpError(403, '無訪問權限');
     }
       res.send({
-          status: '??????',
+          status: true,
           token,
           userId: payload.userId,
           role: payload.role,
