@@ -90,7 +90,7 @@ const check = async (req, res) => {
         throw createHttpError(403, '無訪問權限');
     }
       res.send({
-          status: true,
+          status: '??????',
           token,
           userId: payload.userId,
           role: payload.role,
