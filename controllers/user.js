@@ -93,7 +93,8 @@ const check = async (req, res) => {
           status: true,
           token,
           userId: payload.userId,
-          role: payload.role
+          role: payload.role,
+          payload
       });
   } catch (error) {
       res.status(401).send({ status: false, message: error.message });
@@ -107,21 +108,23 @@ const getUser = async (req, res, next) => {
         // 檢查用戶是否登入且擁有管理者權限
         const token = req.headers.authorization?.replace('Bearer ', '');
         const payload = verifyToken(token);
+        // 根據 ID 從數據庫提取單個用戶資訊
+        const userId = req.params.userId; // 假設用戶 ID 從 URL 參數中獲取
+        const user = await UsersModel.findById(userId).select('-password');  // 確保不返回密碼字段
 
-        if (!payload) {
-            throw createHttpError(403, '無訪問權限');
+        if (!user) {
+            throw createHttpError(404, '用戶未找到');
         }
 
-        // 從數據庫提取所有用戶資訊
-        const users = await UsersModel.find({}).select('-password');  // 確保不返回密碼字段
         res.send({
             status: true,
-            users
+            user
         });
     } catch (error) {
         next(error);
     }
 };
+
 
 
 const updateInfo = handleErrorAsync(async (req, res, next) => {
