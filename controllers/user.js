@@ -193,7 +193,6 @@ const getUsers = async (req, res, next) => {
       next(error);
   }
 };
-
 const updateRole = handleErrorAsync(async (req, res, next) => {
   // 從請求中獲取新的角色信息
   const { newRole } = req.body;
@@ -213,6 +212,55 @@ const updateRole = handleErrorAsync(async (req, res, next) => {
   res.json({ success: true, token: newToken });
 
 })
+const adminUpdateUserInfo = handleErrorAsync(async (req, res, next) => {
+    const userId = req.body._id
+    const allowedUpdates = ['name', 'email', 'phone', 'birthday', 'address', 'gender'];
+    const updateData = Object.keys(req.body)
+        .filter(key => allowedUpdates.includes(key) && req.body[key] !== undefined)
+        .reduce((obj, key) => {
+            obj[key] = req.body[key];
+            return obj;
+        }, {});
+
+    // 驗證名稱
+    if (updateData.name && !validator.isLength(updateData.name, { min: 2 })) {
+        throw createHttpError(400, 'name 至少需要 2 個字元以上');
+    }
+
+    // 驗證電子郵件格式
+    if (updateData.email && !validator.isEmail(updateData.email)) {
+        throw createHttpError(400, 'Email 格式不正確');
+    }
+
+    // 驗證電話號碼格式
+    if (updateData.phone && !validator.isMobilePhone(updateData.phone, 'any', { strictMode: false })) {
+        throw createHttpError(400, '手機號碼格式不正確');
+    }
+
+    // 確認用戶是否有權限進行操作
+    if (req.user.role !== 'admin' && req.user.role !== 'superuser') {
+        throw createHttpError(403, '無權限執行此操作');
+    }
+
+    // 更新用戶信息
+    const updatedUser = await UsersModel.findByIdAndUpdate(
+        userId,
+        updateData,
+        {
+            new: true,
+            runValidators: true
+        }
+    );
+
+    if (!updatedUser) {
+        throw createHttpError(404, '用戶未找到');
+    }
+
+    res.send({
+        status: true,
+        data: updatedUser
+    });
+});
 
 export {
     signup,
@@ -222,4 +270,5 @@ export {
     getUsers,
     updateInfo,
     updateRole,
+    adminUpdateUserInfo,
 };
