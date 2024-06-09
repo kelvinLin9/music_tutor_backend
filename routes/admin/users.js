@@ -21,3 +21,5 @@ router.put('/', isAuth, updateInfo);
 
 
 export default router;
+https://music-tutor-backend.onrender.com/users/ckeck
+https://music-tutor-backend.onrender.com/users/login
