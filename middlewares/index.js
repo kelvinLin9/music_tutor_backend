@@ -8,6 +8,7 @@ export const isAuth = async (req, res, next) => {
       const token = req.headers.authorization?.replace('Bearer ', '');
       const decoded = verifyToken(token); // 假設 verifyToken 返回解碼的 token
       req.user = decoded; // 將解碼的 token 信息存儲在 req.user 中以便後續使用
+      console.log('req.user:', decoded);
       next();
   } catch (error) {
       next(createHttpError(401, '認證失敗：無效的 Token')); // 提供更明確的錯誤信息
