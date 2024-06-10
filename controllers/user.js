@@ -131,9 +131,6 @@ const updateInfo = handleErrorAsync(async (req, res, next) => {
       throw createHttpError(400, '大頭照的 URL 格式不正確');
   }
 
-  // if (sex && !['male', 'female'].includes(sex)) {
-  //     throw createHttpError(400, '性別格式不正確');
-  // }
 
   const updatedUser = await UsersModel.findByIdAndUpdate(_id, {
     name,
@@ -207,7 +204,7 @@ const updateRole = handleErrorAsync(async (req, res, next) => {
 })
 const adminUpdateUserInfo = handleErrorAsync(async (req, res, next) => {
     const userId = req.body._id
-    const allowedUpdates = ['name', 'email', 'phone', 'birthday', 'address', 'gender'];
+    const allowedUpdates = ['name', 'email', 'role', 'phone', 'address', 'birthday', 'gender', 'photo', 'intro', 'facebook', 'instagram', 'discord']
     const updateData = Object.keys(req.body)
         .filter(key => allowedUpdates.includes(key) && req.body[key] !== undefined)
         .reduce((obj, key) => {
