@@ -11,6 +11,7 @@ import mongoose from 'mongoose';
 import usersRouter from './routes/users.js';
 import courseRouter from './routes/course.js';
 import verifyRouter from './routes/verify.js';
+import uploadRouter from './routes/upload.js';
 
 // admin
 import adminUsersRouter from './routes/admin/users.js';
@@ -47,7 +48,7 @@ app.use(cookieParser());
 app.use('/courses', courseRouter);
 app.use('/users', usersRouter);
 app.use('/verify', verifyRouter);
-
+app.use('/upload', uploadRouter)
 // admin
 app.use('/admin/users', adminUsersRouter);
 
