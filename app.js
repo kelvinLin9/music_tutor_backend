@@ -58,7 +58,7 @@ app.use((err, req, res, next) => {
   const statusCode = err.status || 500;
 
   // 如果是開發環境，返回詳細的錯誤信息
-  if (!isDevelopment) {
+  if (isDevelopment) {
       res.status(statusCode).json({
           success: false,
           error: {
@@ -70,7 +70,7 @@ app.use((err, req, res, next) => {
       // 在生產環境中，隱藏錯誤細節，返回通用錯誤信息
       res.status(statusCode).json({
           success: false,
-          message: 'An internal server error occurred.'
+          message: err.message
       });
   }
 });
