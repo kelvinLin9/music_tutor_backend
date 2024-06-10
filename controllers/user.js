@@ -131,12 +131,12 @@ const updateInfo = handleErrorAsync(async (req, res, next) => {
       throw createHttpError(400, 'name 至少需要 2 個字元以上');
   }
 
-  // if (photo && !validator.isURL(photo, {
-  //     protocols: ['http', 'https'],
-  //     require_protocol: true
-  // })) {
-  //     throw createHttpError(400, '大頭照的 URL 格式不正確');
-  // }
+  if (photo && !validator.isURL(photo, {
+      protocols: ['http', 'https'],
+      require_protocol: true
+  })) {
+      throw createHttpError(400, '大頭照的 URL 格式不正確');
+  }
 
   // if (sex && !['male', 'female'].includes(sex)) {
   //     throw createHttpError(400, '性別格式不正確');
