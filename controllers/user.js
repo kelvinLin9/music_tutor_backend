@@ -118,14 +118,7 @@ const getUser = async (req, res, next) => {
 
 
 const updateInfo = handleErrorAsync(async (req, res, next) => {
-  const { name, photo } = req.body;
-
-  const userId = req.user.userId;
-//   const updateData = { name, photo };
-  const updateData = req.body;
-  
-  // 移除未定義的字段
-  Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
+  const { _id, name, email, role, phone, address, birthday, gender, photo, intro, facebook, instagram, discord } = req.body;
 
   if (name && !validator.isLength(name, { min: 2 })) {
       throw createHttpError(400, 'name 至少需要 2 個字元以上');
@@ -142,14 +135,20 @@ const updateInfo = handleErrorAsync(async (req, res, next) => {
   //     throw createHttpError(400, '性別格式不正確');
   // }
 
-  const updatedUser = await UsersModel.findByIdAndUpdate(
-      userId,
-      updateData,
-      {
-        new: true,
-        runValidators: true
-      }
-  );
+  const updatedUser = await UsersModel.findByIdAndUpdate(_id, {
+    name,
+    email,
+    role,
+    phone,
+    address,
+    birthday,
+    gender,
+    photo,
+    intro,
+    facebook,
+    instagram,
+    discord
+}, { new: true, runValidators: true });
 
   if (!updatedUser) {
       return res.status(404).send({
