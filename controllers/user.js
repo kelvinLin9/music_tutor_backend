@@ -85,15 +85,16 @@ const forget = async (req, res, next) => {
 
 const check = async (req, res) => {
   try {
-      const token = req.headers.authorization?.replace('Bearer ', '');
-      const payload = verifyToken(token);  // 最好在確認 token 存在之後再進行驗證
-      if (!payload) {
-        throw createHttpError(403, '無訪問權限');
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    const payload = verifyToken(token);  // 最好在確認 token 存在之後再進行驗證
+    if (!payload) {
+      throw createHttpError(403, '無訪問權限');
     }
+    const user = await UsersModel.findById(req.user.userId);
       res.send({
           status: true,
           token,
-          userId: req.user.userId,
+          user,
           role: payload.role,
       });
   } catch (error) {
