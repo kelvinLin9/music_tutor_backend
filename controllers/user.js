@@ -53,7 +53,7 @@ const login = async (req, res, next) => {
 
         res.send({
             status: true,
-            user: user._id,
+            user: user,
             token: generateToken({ userId: user._id, role: user.role })
         });
     } catch (error) {
