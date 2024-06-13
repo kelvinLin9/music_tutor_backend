@@ -25,13 +25,13 @@ const courseSchema = new Schema({
     required: [true, '上課地點未填寫'],
   },
   mode: {
-    type: String,
+    type: [String],  // 定义为字符串数组
     required: [true, '上課模式未填寫'],
     enum: {
       values: ['在學生家', '在老師家', '線上'],
-      message: '上課模式不正確'
+      message: '上課模式 {VALUE} 不正確'  // 使用 {VALUE} 显示出错的内容
     }
-  },
+  }.
   minutes: {
     type: Number,
     required: [true, '上課時間未填寫'],
