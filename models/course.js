@@ -31,7 +31,7 @@ const courseSchema = new Schema({
       values: ['在學生家', '在老師家', '線上'],
       message: '上課模式 {VALUE} 不正確'  // 使用 {VALUE} 显示出错的内容
     }
-  }.
+  },
   minutes: {
     type: Number,
     required: [true, '上課時間未填寫'],
