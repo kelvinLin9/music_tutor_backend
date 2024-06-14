@@ -54,7 +54,7 @@ const userSchema = new Schema({
     },
     courses: [{
         type: Schema.Types.ObjectId,
-        ref: 'Courses'
+        ref: 'Course'
     }],
     role: {
         type: String,
