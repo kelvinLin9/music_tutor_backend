@@ -107,7 +107,14 @@ const check = async (req, res) => {
 const getUser = async (req, res, next) => {
     try {
       const user = await UsersModel.findById(req.user.userId)
-        .populate('courses');
+                                   .populate('courses');
+      if (!user) {
+          return res.status(404).send({
+              status: false,
+              message: '用戶未找到'
+          });
+      }
+
       res.send({
           status: true,
           result: user
