@@ -106,7 +106,8 @@ const check = async (req, res) => {
 
 const getUser = async (req, res, next) => {
     try {
-      const user = await UsersModel.findById(req.user.userId);
+      const user = await UsersModel.findById(req.user.userId)
+        .populate('courses');
       res.send({
           status: true,
           result: user
