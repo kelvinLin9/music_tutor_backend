@@ -107,11 +107,8 @@ const check = async (req, res) => {
 const getUser = async (req, res, next) => {
     try {
         const user = await UsersModel.findById(req.user.userId)
-                                     .populate({
-                                         path: 'courses', // 確保這個 path 正確對應到 User 模型的 courses 屬性
-                                         select: 'name intro category place mode minutes price img imgList instructor' // 這裡可以根據需要選擇填充的字段
-                                     })
-                                     .exec(); // 執行查詢
+        .populate('courses');
+        console.log(user.courses); // 檢查這裡是否已經是填充後的課程資料
 
         if (!user) {
             return res.status(404).send({
