@@ -107,8 +107,7 @@ const check = async (req, res) => {
 const getUser = async (req, res, next) => {
     try {
         const user = await UsersModel.findById(req.user.userId)
-        .populate('courses', 'name');
-        console.log(user.courses); // 檢查這裡是否已經是填充後的課程資料
+        .populate('courses');
 
         if (!user) {
             return res.status(404).send({
@@ -186,7 +185,9 @@ const getUsers = async (req, res, next) => {
       }
 
       // 從數據庫提取所有用戶資訊
-      const users = await UsersModel.find({}).select('-password');  // 確保不返回密碼字段
+      const users = await UsersModel.find({}).select('-password')
+      .populate('courses');
+      
       res.send({
           status: true,
           users
