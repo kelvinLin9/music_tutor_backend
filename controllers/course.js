@@ -1,4 +1,5 @@
 import Course from '../models/course.js';
+import User from '../models/user.js';
 import createHttpError from 'http-errors';
 
 export const createCourse = async (req, res, next) => {
