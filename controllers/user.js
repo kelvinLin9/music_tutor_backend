@@ -107,7 +107,7 @@ const check = async (req, res) => {
 const getUser = async (req, res, next) => {
     try {
         const user = await UsersModel.findById(req.user.userId)
-        .populate('courses');
+        .populate('courses', 'name');
         console.log(user.courses); // 檢查這裡是否已經是填充後的課程資料
 
         if (!user) {
