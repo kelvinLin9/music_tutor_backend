@@ -43,8 +43,9 @@ const userSchema = new Schema({
         type: Date
     },
     address: {
-        type: String,
-        detail: String
+      type: { 
+        detail: String 
+      }
     },
     gender: {
         type: String,
