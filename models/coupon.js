@@ -31,7 +31,8 @@ const couponSchema = new Schema({
     default: true
   }
 }, {
-  timestamps: true  // 自動添加 createdAt 和 updatedAt 時間戳
+  versionKey: false,
+  timestamps: true
 });
 
 export default mongoose.model('Coupon', couponSchema);
