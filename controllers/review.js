@@ -1,4 +1,4 @@
-import ReviewModel from '../models/order.js';
+import ReviewModel from '../models/review.js';
 
 
 const addReview = async (req, res) => {
@@ -31,7 +31,7 @@ const getReview = async (req, res) => {
   try {
       const review = await ReviewModel.findById(req.params.id).populate('user', 'name');
       if (!review) {
-          return res.status(404).json({ success: false, message: 'ReviewModel not found' });
+          return res.status(404).json({ success: false, message: 'Review not found' });
       }
       res.status(200).json({ success: true, data: review });
   } catch (error) {
@@ -48,7 +48,7 @@ const updateReview = async (req, res) => {
       }, { new: true, runValidators: true });
 
       if (!review) {
-          return res.status(404).json({ success: false, message: 'ReviewModel not found' });
+          return res.status(404).json({ success: false, message: 'Review not found' });
       }
       res.status(200).json({ success: true, data: review });
   } catch (error) {
@@ -58,7 +58,7 @@ const updateReview = async (req, res) => {
 
 const deleteReview = async (req, res) => {
   try {
-      const review = await Review.findByIdAndDelete(req.params.id);
+      const review = await ReviewModel.findByIdAndDelete(req.params.id);
       if (!review) {
           return res.status(404).json({ success: false, message: 'Review not found' });
       }
@@ -68,7 +68,7 @@ const deleteReview = async (req, res) => {
   }
 };
 
-export default {
+export {
   addReview,
   getReviews,
   getReview,
