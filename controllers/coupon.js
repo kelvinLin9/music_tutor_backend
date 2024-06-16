@@ -2,7 +2,7 @@ import CouponModel from '../models/coupon.js';
 
 const createCoupon = async (req, res) => {
   try {
-      const { name, code, discountPercentage, expiryDate, isActive } = req.body;
+      const { name, code, percentage, expiryDate, isActive } = req.body;
       const coupon = new CouponModel({
           name,
           code,
@@ -40,7 +40,7 @@ const getCoupon = async (req, res) => {
 
 const updateCoupon = async (req, res) => {
   try {
-      const { name, code, discountPercentage, expiryDate, isActive } = req.body;
+      const { name, code, percentage, expiryDate, isActive } = req.body;
       const coupon = await CouponModel.findByIdAndUpdate(req.params.id, {
           name,
           code,
