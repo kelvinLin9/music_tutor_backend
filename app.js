@@ -12,6 +12,7 @@ import usersRouter from './routes/users.js';
 import courseRouter from './routes/course.js';
 import verifyRouter from './routes/verify.js';
 import uploadRouter from './routes/upload.js';
+import couponRouter from './routes/coupon.js';
 
 // admin
 import adminUsersRouter from './routes/admin/users.js';
@@ -48,7 +49,8 @@ app.use(cookieParser());
 app.use('/courses', courseRouter);
 app.use('/users', usersRouter);
 app.use('/verify', verifyRouter);
-app.use('/upload', uploadRouter)
+app.use('/upload', uploadRouter);
+app.use('/coupons', couponRouter);
 // admin
 app.use('/admin/users', adminUsersRouter);
 
