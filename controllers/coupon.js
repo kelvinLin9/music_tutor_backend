@@ -6,7 +6,7 @@ const createCoupon = async (req, res) => {
       const coupon = new CouponModel({
           name,
           code,
-          discountPercentage,
+          percentage,
           expiryDate,
           isActive
       });
@@ -44,7 +44,7 @@ const updateCoupon = async (req, res) => {
       const coupon = await CouponModel.findByIdAndUpdate(req.params.id, {
           name,
           code,
-          discountPercentage,
+          percentage,
           expiryDate,
           isActive
       }, { new: true, runValidators: true });
