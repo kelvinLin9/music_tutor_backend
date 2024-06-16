@@ -13,6 +13,7 @@ import courseRouter from './routes/course.js';
 import verifyRouter from './routes/verify.js';
 import uploadRouter from './routes/upload.js';
 import couponRouter from './routes/coupon.js';
+import orderRouter from './routes/order.js';
 
 // admin
 import adminUsersRouter from './routes/admin/users.js';
@@ -51,6 +52,7 @@ app.use('/users', usersRouter);
 app.use('/verify', verifyRouter);
 app.use('/upload', uploadRouter);
 app.use('/coupons', couponRouter);
+app.use('/orders', orderRouter);
 // admin
 app.use('/admin/users', adminUsersRouter);
 
