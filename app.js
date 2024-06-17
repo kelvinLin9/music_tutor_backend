@@ -15,6 +15,7 @@ import uploadRouter from './routes/upload.js';
 import couponRouter from './routes/coupon.js';
 import orderRouter from './routes/order.js';
 import reviewRouter from './routes/review.js';
+import appointmentRouter from './routes/appointment.js';
 
 // admin
 import adminUsersRouter from './routes/admin/users.js';
@@ -55,6 +56,7 @@ app.use('/upload', uploadRouter);
 app.use('/coupons', couponRouter);
 app.use('/orders', orderRouter);
 app.use('/reviews', reviewRouter);
+app.use('/appointments', appointmentRouter);
 // admin
 app.use('/admin/users', adminUsersRouter);
 
