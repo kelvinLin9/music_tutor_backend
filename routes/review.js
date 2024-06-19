@@ -3,10 +3,10 @@ import { addReview, getReview, updateReview, deleteReview, getReviews } from '..
 
 const router = Router();
 
-router.post('/reviews', addReview);
-router.get('/reviews/course/:courseId', getReviews);
-router.get('/reviews/:id', getReview);
-router.put('/reviews/:id', updateReview);
-router.delete('/reviews/:id', deleteReview);
+router.post('/', addReview);
+router.get('/course/:courseId', getReviews);
+router.get('/:id', getReview);
+router.put('/:id', updateReview);
+router.delete('/:id', deleteReview);
 
 export default router;
