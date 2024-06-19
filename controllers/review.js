@@ -4,9 +4,10 @@ import ReviewModel from '../models/review.js';
 const addReview = async (req, res) => {
   try {
       const { course, rating, comment } = req.body;
+      console.log(req)
       const review = new ReviewModel({
           course,
-          user: req.user._id, // 假設用戶ID從認證中獲取
+          user: req.user.userId,
           rating,
           comment
       });
