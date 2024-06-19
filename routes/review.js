@@ -6,7 +6,7 @@ const router = Router();
 router.use(checkRequestBodyValidator);
 
 router.post('/', isAuth, addReview);
-router.get('/course/:courseId', isAuth, getReviews);
+router.get('/:courseId', isAuth, getReviews);
 router.get('/:id', isAuth, getReview);
 router.put('/:id', isAuth, updateReview);
 router.delete('/:id', isAuth, deleteReview);
