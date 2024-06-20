@@ -4,7 +4,6 @@ import createHttpError from 'http-errors';
 
 export const createCourse = async (req, res, next) => {
   try {
-    // 確保請求中包含 instructor ID
     if (!req.body.instructor) {
       throw new Error('Instructor ID is required');
     }
@@ -26,7 +25,8 @@ export const createCourse = async (req, res, next) => {
 export const getCourse = async (req, res, next) => {
   try {
     const course = await Course.findById(req.params.id)
-      .populate('instructor', 'name') // 關聯載入授課教師的姓名
+      .populate('instructor', 'name')
+      .populate('reviews')
       .exec();
 
     if (!course) throw createHttpError(404, '課程未找到');
@@ -63,7 +63,7 @@ export const deleteCourse = async (req, res, next) => {
 export const getAllCourses = async (req, res, next) => {
   try {
     const courses = await Course.find({})
-      .populate('instructor', 'name') // 在每個課程中關聯載入授課教師的姓名
+      .populate('instructor', 'name') 
       .exec();
 
     res.json(courses);
@@ -72,12 +72,3 @@ export const getAllCourses = async (req, res, next) => {
   }
 };
 
-
-// export const getAllCourses = async (req, res, next) => {
-//   try {
-//     const courses = await Course.find({});
-//     res.json(courses);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
