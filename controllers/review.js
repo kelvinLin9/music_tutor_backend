@@ -1,5 +1,5 @@
 import ReviewModel from '../models/review.js';
-
+import CourseModel from '../models/course.js';
 
 const addReview = async (req, res) => {
   try {
@@ -17,7 +17,7 @@ const addReview = async (req, res) => {
       await CourseModel.findByIdAndUpdate(course, {
           $push: { reviews: savedReview._id } 
       });
-
+      console.log(course)
       res.status(201).json({ success: true, data: savedReview });
   } catch (error) {
       console.log(error);
