@@ -63,7 +63,7 @@ export const deleteCourse = async (req, res, next) => {
 export const getAllCourses = async (req, res, next) => {
   try {
     const courses = await Course.find({})
-      .populate('instructor', 'name') 
+      .populate('instructor', 'name')
       .exec();
 
     res.json(courses);
