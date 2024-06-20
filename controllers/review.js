@@ -4,19 +4,27 @@ import ReviewModel from '../models/review.js';
 const addReview = async (req, res) => {
   try {
       const { course, rating, comment } = req.body;
-      console.log(req)
       const review = new ReviewModel({
           course,
-          user: req.user.userId,
+          user: req.user.userId, // 假設用戶ID從認證中獲取
           rating,
           comment
       });
-      await review.save();
-      res.status(201).json({ success: true, data: review });
+
+      const savedReview = await review.save();
+
+      
+      await CourseModel.findByIdAndUpdate(course, {
+          $push: { reviews: savedReview._id } 
+      });
+
+      res.status(201).json({ success: true, data: savedReview });
   } catch (error) {
+      console.log(error);
       res.status(400).json({ success: false, message: error.message });
   }
 };
+
 
 const getReviews = async (req, res) => {
   try {
