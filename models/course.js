@@ -1,5 +1,7 @@
-import { Schema, model } from 'mongoose';
+import mongoose from 'mongoose';
 import validator from 'validator';
+
+const { Schema, model } = mongoose;
 
 const courseSchema = new Schema({
   name: {
@@ -53,20 +55,23 @@ const courseSchema = new Schema({
     }
   },
   imgList: {
-    type: [String], 
+    type: [String],
     validate: {
       validator: function(value) {
-        // 確保每個陣列元素都是有效的URL
         return value.every(url => validator.isURL(url));
       },
       message: '圖片列表中包含無效的圖片連結'
     },
   },
   instructor: {
-    type: Schema.Types.ObjectId, // 定義為ObjectId
-    ref: 'User', // 引用'user'模型
+    type: Schema.Types.ObjectId,
+    ref: 'User',
     required: [true, '老師ID未填寫']
   },
+  reviews: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Review'
+  }]
 }, {
   versionKey: false,
   timestamps: true
