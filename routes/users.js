@@ -111,7 +111,7 @@ router.post('/forgot', forget);
  */
 
 // 檢查是否登入
-router.get('/check', check);
+router.get('/check', isAuth, check);
 /**
  * #swagger.description = "檢查是否登入"
  * #swagger.responses[200] = {
