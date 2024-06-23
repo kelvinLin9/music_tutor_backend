@@ -21,24 +21,47 @@ const createOrder = async (req, res) => {
 
 const getOrders = async (req, res) => {
   try {
-      const orders = await OrderModel.find()
-                                .populate({
-                                    path: 'items.product',
-                                    model: 'Course',
-                                    select: 'name description price'
-                                })
-                                .populate('user', 'name email')
-                                .populate({
-                                  path: 'couponUsed',
-                                  model: 'Coupon',
-                                  select: 'name code percentage'
-                                });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const sortBy = req.query.sortBy || 'createdAt';
+    const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
+    const skip = (page - 1) * limit;
 
-      res.status(200).json({ success: true, data: orders });
+    const [orders, totalItems] = await Promise.all([
+      OrderModel.find({})
+                .populate({
+                  path: 'items.product',
+                  model: 'Course',
+                  select: 'name description price'
+                })
+                .populate('user', 'name email')
+                .populate({
+                  path: 'couponUsed',
+                  model: 'Coupon',
+                  select: 'name code percentage'
+                })
+                .sort({ [sortBy]: sortOrder })
+                .limit(limit)
+                .skip(skip),
+      OrderModel.countDocuments({})
+    ]);
+
+    const totalPages = Math.ceil(totalItems / limit);
+
+    res.status(200).json({
+      success: true,
+      data: orders,
+      pagination: {
+        page,
+        totalPages,
+        totalItems
+      }
+    });
   } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 
 
