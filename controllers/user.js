@@ -89,7 +89,7 @@ const check = async (req, res) => {
     if (!token) {
       throw createHttpError(401, '請先登入');
     }
-    const payload = verifyToken(token);  // 最好在確認 token 存在之後再進行驗證
+    const payload = verifyToken(token);
     if (!payload) {
       throw createHttpError(403, '無訪問權限');
     }
