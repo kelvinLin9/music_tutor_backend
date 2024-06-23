@@ -86,6 +86,9 @@ const forget = async (req, res, next) => {
 const check = async (req, res) => {
   try {
     const token = req.headers.authorization?.replace('Bearer ', '');
+    if (!token) {
+      throw createHttpError(401, '請先登入');
+    }
     const payload = verifyToken(token);  // 最好在確認 token 存在之後再進行驗證
     if (!payload) {
       throw createHttpError(403, '無訪問權限');
