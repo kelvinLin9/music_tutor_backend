@@ -179,12 +179,12 @@ const updateInfo = handleErrorAsync(async (req, res, next) => {
 // admin
 const getUsers = async (req, res, next) => {
     try {
-        const token = req.headers.authorization?.replace('Bearer ', '');
-        const payload = verifyToken(token);
+        // const token = req.headers.authorization?.replace('Bearer ', '');
+        // const payload = verifyToken(token);
   
-        if (!payload) {
-            throw createHttpError(403, '無訪問權限');
-        }
+        // if (!payload) {
+        //     throw createHttpError(403, '無訪問權限');
+        // }
   
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
