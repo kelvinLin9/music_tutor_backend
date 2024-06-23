@@ -37,17 +37,15 @@ const getCoupons = async (req, res) => {
 
     const totalPages = Math.ceil(total / limit);
 
-    res.status(200).json({
+    res.send({
       success: true,
-      data: {
-        coupons,
-        pagination: {
-          page,
-          limit,
-          totalPages,
-          totalItems: total
-        }
-      }
+      coupons,
+      page,
+      limit,
+      totalPages,
+      totalItems,
+      sortBy,
+      sortOrder,
     });
   } catch (error) {
     next(error);
