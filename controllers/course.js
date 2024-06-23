@@ -60,15 +60,41 @@ export const deleteCourse = async (req, res, next) => {
   }
 };
 
-export const getAllCourses = async (req, res, next) => {
+export const getCourses = async (req, res, next) => {
   try {
-    const courses = await Course.find({})
-      .populate('instructor', 'name')
-      .exec();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const sortBy = req.query.sortBy || 'createdAt'; 
+    const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
+    const filterBy = req.query.filterBy ? JSON.parse(req.query.filterBy) : {};
 
-    res.json(courses);
+    const skip = (page - 1) * limit;
+
+    const [courses, totalItems] = await Promise.all([
+      Course.find(filterBy)
+            .populate('instructor', 'name')
+            .sort({ [sortBy]: sortOrder }) 
+            .limit(limit)
+            .skip(skip)
+            .exec(),
+      Course.countDocuments(filterBy)
+    ]);
+
+    const totalPages = Math.ceil(totalItems / limit);
+
+    res.json({
+      success: true,
+      data: courses,
+      pagination: {
+        page,
+        limit,
+        totalPages,
+        totalItems
+      }
+    });
   } catch (error) {
     next(error);
   }
 };
+
 
