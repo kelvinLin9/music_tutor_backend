@@ -167,39 +167,42 @@ const updateInfo = handleErrorAsync(async (req, res, next) => {
 
 // admin
 const getUsers = async (req, res, next) => {
-    try {  
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
-        const sortBy = req.query.sortBy || 'createdAt';
-        const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
-        const skip = (page - 1) * limit;
-  
-        const [users, totalItems] = await Promise.all([
-            UsersModel.find({})
-                      .select('-password')
-                      .populate('courses')
-                      .sort({ [sortBy]: sortOrder })
-                      .limit(limit)
-                      .skip(skip),
-            UsersModel.countDocuments({})
-        ]);
-  
-        const totalPages = Math.ceil(totalItems / limit);
-  
-        res.send({
-            status: true,
-            page,
-            limit,
-            totalPages,
-            totalItems,
-            sortBy,
-            sortOrder,
-            users
-        });
-    } catch (error) {
-        next(error);
-    }
+  try {  
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const sortBy = req.query.sortBy || 'createdAt';
+      const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
+      const filterBy = req.query.filterBy ? JSON.parse(req.query.filterBy) : {};
+
+      const skip = (page - 1) * limit;
+
+      const [users, totalItems] = await Promise.all([
+          UsersModel.find(filterBy)
+                    .select('-password')
+                    .populate('courses')
+                    .sort({ [sortBy]: sortOrder })
+                    .limit(limit)
+                    .skip(skip),
+          UsersModel.countDocuments(filterBy)
+      ]);
+
+      const totalPages = Math.ceil(totalItems / limit);
+
+      res.send({
+          status: true,
+          page,
+          limit,
+          totalPages,
+          totalItems,
+          sortBy,
+          sortOrder,
+          users
+      });
+  } catch (error) {
+      next(error);
+  }
 };
+
 const updateRole = handleErrorAsync(async (req, res, next) => {
   // 從請求中獲取新的角色信息
   const { newRole } = req.body;

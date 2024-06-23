@@ -19,12 +19,42 @@ const createCoupon = async (req, res) => {
 
 const getCoupons = async (req, res) => {
   try {
-      const coupons = await CouponModel.find();
-      res.send({ success: true, data: coupons });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const sortBy = req.query.sortBy || 'createdAt';
+    const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
+    const filterBy = req.query.filterBy ? JSON.parse(req.query.filterBy) : {};
+
+    const skip = (page - 1) * limit;
+
+    const [coupons, total] = await Promise.all([
+      CouponModel.find(filterBy)
+        .sort({ [sortBy]: sortOrder })
+        .limit(limit)
+        .skip(skip),
+      CouponModel.countDocuments(filterBy)
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        coupons,
+        pagination: {
+          page,
+          limit,
+          totalPages,
+          totalItems: total
+        }
+      }
+    });
   } catch (error) {
-      res.status(500).send({ success: false, message: error.message });
+    next(error);
   }
 };
+
+
 
 const getCoupon = async (req, res) => {
   try {
