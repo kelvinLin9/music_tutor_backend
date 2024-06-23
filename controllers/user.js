@@ -178,22 +178,18 @@ const updateInfo = handleErrorAsync(async (req, res, next) => {
 
 // admin
 const getUsers = async (req, res, next) => {
-    try {
-        // const token = req.headers.authorization?.replace('Bearer ', '');
-        // const payload = verifyToken(token);
-  
-        // if (!payload) {
-        //     throw createHttpError(403, '無訪問權限');
-        // }
-  
+    try {  
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
+        const sortBy = req.query.sortBy || 'createdAt';
+        const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
         const skip = (page - 1) * limit;
   
         const [users, totalItems] = await Promise.all([
             UsersModel.find({})
                       .select('-password')
                       .populate('courses')
+                      .sort({ [sortBy]: sortOrder })
                       .limit(limit)
                       .skip(skip),
             UsersModel.countDocuments({})
@@ -207,12 +203,15 @@ const getUsers = async (req, res, next) => {
             limit,
             totalPages,
             totalItems,
+            sortBy,
+            sortOrder,
             users
         });
     } catch (error) {
         next(error);
     }
   };
+  
   
 const updateRole = handleErrorAsync(async (req, res, next) => {
   // 從請求中獲取新的角色信息
