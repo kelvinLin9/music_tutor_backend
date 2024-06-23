@@ -178,27 +178,42 @@ const updateInfo = handleErrorAsync(async (req, res, next) => {
 
 // admin
 const getUsers = async (req, res, next) => {
-  try {
-      // 檢查用戶是否登入且擁有管理者權限
-      const token = req.headers.authorization?.replace('Bearer ', '');
-      const payload = verifyToken(token);
-
-      if (!payload) {
-          throw createHttpError(403, '無訪問權限');
-      }
-
-      // 從數據庫提取所有用戶資訊
-      const users = await UsersModel.find({}).select('-password')
-      .populate('courses');
-      
-      res.send({
-          status: true,
-          users
-      });
-  } catch (error) {
-      next(error);
-  }
-};
+    try {
+        const token = req.headers.authorization?.replace('Bearer ', '');
+        const payload = verifyToken(token);
+  
+        if (!payload) {
+            throw createHttpError(403, '無訪問權限');
+        }
+  
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+  
+        const [users, totalItems] = await Promise.all([
+            UsersModel.find({})
+                      .select('-password')
+                      .populate('courses')
+                      .limit(limit)
+                      .skip(skip),
+            UsersModel.countDocuments({})
+        ]);
+  
+        const totalPages = Math.ceil(totalItems / limit);
+  
+        res.send({
+            status: true,
+            page,
+            limit,
+            totalPages,
+            totalItems,
+            users
+        });
+    } catch (error) {
+        next(error);
+    }
+  };
+  
 const updateRole = handleErrorAsync(async (req, res, next) => {
   // 從請求中獲取新的角色信息
   const { newRole } = req.body;
