@@ -35,9 +35,6 @@ const signup = handleErrorAsync(async (req, res, next) => {
       token: generateToken({ userId: user._id, role: user.role })
   });
 });
-
-
-
 const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
@@ -60,7 +57,6 @@ const login = async (req, res, next) => {
         next(error);
     }
 };
-
 const forget = async (req, res, next) => {
     try {
         const { email, code, newPassword } = req.body;
@@ -82,7 +78,6 @@ const forget = async (req, res, next) => {
         next(error);
     }
 };
-
 const check = async (req, res) => {
   try {
     const token = req.headers.authorization?.replace('Bearer ', '');
@@ -104,9 +99,6 @@ const check = async (req, res) => {
       res.status(401).send({ status: false, message: error.message });
   }
 };
-
-
-
 const getUser = async (req, res, next) => {
     try {
         const user = await UsersModel.findById(req.user.userId)
@@ -128,9 +120,6 @@ const getUser = async (req, res, next) => {
         next(error);
     }
 };
-
-
-
 const updateInfo = handleErrorAsync(async (req, res, next) => {
   const { _id, name, email, role, phone, address, birthday, gender, photo, intro, facebook, instagram, discord } = req.body;
 
@@ -210,9 +199,7 @@ const getUsers = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-  };
-  
-  
+};
 const updateRole = handleErrorAsync(async (req, res, next) => {
   // 從請求中獲取新的角色信息
   const { newRole } = req.body;
@@ -281,7 +268,24 @@ const adminUpdateUserInfo = handleErrorAsync(async (req, res, next) => {
         data: updatedUser
     });
 });
+const adminDeleteUser = handleErrorAsync(async (req, res, next) => {
+  const userId = req.params.id;
 
+  if (req.user.role !== 'admin' && req.user.role !== 'superuser') {
+      throw createHttpError(403, '無權限執行此操作');
+  }
+
+  const deletedUser = await UsersModel.findByIdAndDelete(userId);
+
+  if (!deletedUser) {
+      throw createHttpError(404, '用戶未找到');
+  }
+
+  res.send({
+      status: true,
+      data: deletedUser
+  });
+});
 export {
     signup,
     login,
@@ -292,4 +296,5 @@ export {
     updateInfo,
     updateRole,
     adminUpdateUserInfo,
+    adminDeleteUser,
 };
