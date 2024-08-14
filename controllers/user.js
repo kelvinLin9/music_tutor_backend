@@ -164,7 +164,6 @@ const updateInfo = handleErrorAsync(async (req, res, next) => {
 });
 
 
-
 // admin
 const getUsers = async (req, res, next) => {
   try {  
@@ -202,7 +201,6 @@ const getUsers = async (req, res, next) => {
       next(error);
   }
 };
-
 const updateRole = handleErrorAsync(async (req, res, next) => {
   // 從請求中獲取新的角色信息
   const { newRole } = req.body;
@@ -289,6 +287,8 @@ const adminDeleteUser = handleErrorAsync(async (req, res, next) => {
       data: deletedUser
   });
 });
+
+
 export {
     signup,
     login,

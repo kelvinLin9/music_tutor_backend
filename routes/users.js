@@ -9,6 +9,8 @@ import {
   updateRole,
 } from '../controllers/user.js';
 import { checkRequestBodyValidator, isAuth } from '../middlewares/index.js';
+import passport from 'passport';
+
 
 const router = Router();
 
@@ -173,5 +175,22 @@ router.put('/profile', isAuth, updateInfo);
  *     }
  * }
  */
-router.put('update-role', isAuth, updateRole)
+router.put('/update-role', isAuth, updateRole)
+
+// google
+router.get('/google', passport.authenticate('google', {
+  scope: [ 'email', 'profile' ],
+}));
+
+router.get('/google/callback', passport.authenticate('google', { session: false }), (req, res) => {
+  res.send({
+    status: true,
+    data: {
+      id: req.user.id,
+      name: req.user.displayName
+    }
+  });
+})
+
+
 export default router;
