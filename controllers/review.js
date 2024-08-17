@@ -17,10 +17,10 @@ const addReview = async (req, res) => {
       await CourseModel.findByIdAndUpdate(course, {
           $push: { reviews: savedReview._id } 
       });
-      console.log(course)
+      // console.log(course)
       res.status(201).json({ success: true, data: savedReview });
   } catch (error) {
-      console.log(error);
+      // console.log(error);
       res.status(400).json({ success: false, message: error.message });
   }
 };

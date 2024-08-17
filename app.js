@@ -6,8 +6,6 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import passport from 'passport';
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 
 
 // import indexRouter from './routes/index.js';
@@ -62,20 +60,6 @@ app.use('/reviews', reviewRouter);
 app.use('/appointments', appointmentRouter);
 // admin
 app.use('/admin/users', adminUsersRouter);
-
-
-// google
-passport.use(new GoogleStrategy({
-  clientID: process.env.GOOGLE_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: "http://localhost:3000/user/google/callback"
-},
-function(accessToken, refreshToken, profile, cb) {
-  User.findOrCreate({ googleId: profile.id }, function (err, user) {
-    return cb(err, user);
-  });
-}
-));
 
 
 app.use((err, req, res, next) => {

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { 
   login, 
+  googleLogin,
   signup,
   forget,
   check,
@@ -10,7 +11,33 @@ import {
 } from '../controllers/user.js';
 import { checkRequestBodyValidator, isAuth } from '../middlewares/index.js';
 import passport from 'passport';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import dotenv from 'dotenv';
+dotenv.config();
 
+// google
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
+  callbackURL: "http://localhost:3000/users/google/callback"
+},
+async function(accessToken, refreshToken, profile, cb) {
+  console.log("測試")
+  console.log(profile)
+  try {
+    const user = await User.findOrCreate(
+      {
+        googleId: profile.id,
+        name: profile.displayName, 
+        email: profile.emails[0].value,
+      }
+    );
+    return cb(null, user);
+  } catch (err) {
+    return cb(err);
+  }
+}
+));
 
 const router = Router();
 
@@ -182,15 +209,16 @@ router.get('/google', passport.authenticate('google', {
   scope: [ 'email', 'profile' ],
 }));
 
-router.get('/google/callback', passport.authenticate('google', { session: false }), (req, res) => {
-  res.send({
-    status: true,
-    data: {
-      id: req.user.id,
-      name: req.user.displayName
-    }
-  });
-})
+router.get('/google/callback', passport.authenticate('google', { session: false }),() => console.log('ddd'), googleLogin)
 
 
 export default router;
+
+
+// res.send({
+//   status: true,
+//   data: {
+//     id: req.user.id,
+//     name: req.user.displayName
+//   }
+// });
