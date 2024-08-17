@@ -3,7 +3,7 @@ import createHttpError from 'http-errors';
 import validator from 'validator';
 import UsersModel from '../models/user.js'
 import { generateToken, verifyToken } from '../utils/index.js';
-import { handleErrorAsync} from '../statusHandle/handleErrorAsync.js';
+import { handleErrorAsync } from '../statusHandle/handleErrorAsync.js';
 
 
 const signup = handleErrorAsync(async (req, res, next) => {
@@ -162,30 +162,7 @@ const updateInfo = handleErrorAsync(async (req, res, next) => {
       result: updatedUser
   });
 });
-const googleLogin = async (req, res, next) => {
-  console.log('res', res);
-  console.log('req', req);
-  // try {
-  //     const { email, password } = req.body;
-  //     const user = await UsersModel.findOne({ email }).select('+password');
-  //     if (!user) {
-  //         throw createHttpError(404, '此使用者不存在');
-  //     }
 
-  //     const isMatch = await bcrypt.compare(password, user.password);
-  //     if (!isMatch) {
-  //         throw createHttpError(400, '密碼錯誤');
-  //     }
-
-  //     res.send({
-  //         status: true,
-  //         user: user,
-  //         token: generateToken({ userId: user._id, role: user.role })
-  //     });
-  // } catch (error) {
-  //     next(error);
-  // }
-};
 
 // admin
 const getUsers = async (req, res, next) => {
@@ -315,7 +292,6 @@ const adminDeleteUser = handleErrorAsync(async (req, res, next) => {
 export {
     signup,
     login,
-    googleLogin,
     forget,
     check,
     getUser,

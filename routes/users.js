@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { 
   login, 
-  googleLogin,
   signup,
   forget,
   check,
@@ -9,29 +8,33 @@ import {
   updateInfo,
   updateRole,
 } from '../controllers/user.js';
+import { createUser, googleLogin } from '../controllers/auth.js';
 import { checkRequestBodyValidator, isAuth } from '../middlewares/index.js';
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import dotenv from 'dotenv';
 dotenv.config();
-
+import UsersModel from '../models/user.js'
+import { handleErrorAsync } from '../statusHandle/handleErrorAsync.js';
 // google
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
   callbackURL: "http://localhost:3000/users/google/callback"
 },
 async function(accessToken, refreshToken, profile, cb) {
   console.log("測試")
-  console.log(profile)
   try {
-    const user = await User.findOrCreate(
-      {
+    let user = await UsersModel.findOne({ googleId: profile.id });
+    if (!user) {
+      user = await UsersModel.create({
         googleId: profile.id,
-        name: profile.displayName, 
+        name: profile.displayName,
         email: profile.emails[0].value,
-      }
-    );
+        role: 'user'
+      });
+    }
+    console.log('user', user);
     return cb(null, user);
   } catch (err) {
     return cb(err);
@@ -209,8 +212,9 @@ router.get('/google', passport.authenticate('google', {
   scope: [ 'email', 'profile' ],
 }));
 
-router.get('/google/callback', passport.authenticate('google', { session: false }),() => console.log('ddd'), googleLogin)
+router.get('/google/callback', passport.authenticate('google', { session: false }), googleLogin)
 
+router.post('/googleClient/callback', passport.authenticate('google', { session: false }), googleLogin)
 
 export default router;
 

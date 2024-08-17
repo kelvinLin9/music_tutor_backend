@@ -25,10 +25,14 @@ const userSchema = new Schema({
         }
     },
     password: {
+      type: String,
+      minlength: 8,
+      select: false
+    },
+    googleId: {
         type: String,
-        required: [true, '密碼未填寫'],
-        minlength: 8,
-        select: false
+        unique: true,
+        sparse: true
     },
     phone: {
         type: String,
@@ -121,5 +125,13 @@ const userSchema = new Schema({
 //     this.email = this.email.toLowerCase().trim();
 //     next();
 // });
+
+userSchema.pre('save', async function(next) {
+  if (this.isModified('password') && this.password) {
+      this.password = await bcrypt.hash(this.password, 12);
+  }
+  this.email = this.email.toLowerCase().trim();
+  next();
+});
 
 export default model('User', userSchema);
