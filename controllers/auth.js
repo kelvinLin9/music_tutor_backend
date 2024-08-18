@@ -27,7 +27,19 @@ const googleLogin = handleErrorAsync(async (req, res, next) => {
   });
 });
 
+const googleClientLogin = handleErrorAsync(async (req, res, next) => {
+  console.log("googleClientLogin")
+  console.log('req', req.user.googleId);
+  // res.send({
+  //   status: true,
+  //   user: req.user,
+  //   token: generateToken({ userId: req.user.googleId, role: req.user.role })
+  // });
+});
+
+
 export {
   createUser,
   googleLogin,
+  googleClientLogin
 };
