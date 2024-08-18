@@ -23,7 +23,7 @@ const googleLogin = handleErrorAsync(async (req, res, next) => {
   res.send({
     status: true,
     user: req.user,
-    token: generateToken({ userId: req.user.googleId, role: req.user.role })
+    token: generateToken({ userId: req.user._id, role: req.user.role })
   });
 });
 
