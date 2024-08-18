@@ -8,7 +8,7 @@ import {
   updateInfo,
   updateRole,
 } from '../controllers/user.js';
-import { createUser, googleLogin } from '../controllers/auth.js';
+import { googleLogin } from '../controllers/auth.js';
 import { checkRequestBodyValidator, isAuth } from '../middlewares/index.js';
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
@@ -24,6 +24,7 @@ passport.use(new GoogleStrategy({
 },
 async function(accessToken, refreshToken, profile, cb) {
   console.log("測試")
+  console.log(profile)
   try {
     let user = await UsersModel.findOne({ googleId: profile.id });
     if (!user) {
@@ -31,6 +32,7 @@ async function(accessToken, refreshToken, profile, cb) {
         googleId: profile.id,
         name: profile.displayName,
         email: profile.emails[0].value,
+        photo: profile.photos[0].value,
         role: 'user'
       });
     }
