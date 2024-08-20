@@ -16,11 +16,16 @@ import dotenv from 'dotenv';
 dotenv.config();
 import UsersModel from '../models/user.js'
 import { handleErrorAsync } from '../statusHandle/handleErrorAsync.js';
+
 // google
+const callbackURL = process.env.NODE_ENV === 'production'
+  ? 'https://myapp.com/users/google/callback'
+  : 'http://localhost:3000/users/google/callback';
+
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: "http://localhost:3000/users/google/callback"
+  callbackURL: callbackURL
 },
 async function(accessToken, refreshToken, profile, cb) {
   console.log("測試")
