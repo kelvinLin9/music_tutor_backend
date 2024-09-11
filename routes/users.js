@@ -20,8 +20,8 @@ import { handleErrorAsync } from '../statusHandle/handleErrorAsync.js';
 // google
 const callbackURL = process.env.NODE_ENV === 'production'
   // ? 'https://kelvinlin9.github.io/music_tutor_dashboard/google/callback'
-  ? 'http://localhost:3000/users/google/callback'
-  : 'http://localhost:3000/users/google/callback';
+  ? 'http://localhost:3000/music_tutor_dashboard/users/google/callback'
+  : 'http://localhost:3000/music_tutor_dashboard/users/google/callback';
 
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
