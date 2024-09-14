@@ -63,6 +63,7 @@ app.use('/admin/users', adminUsersRouter);
 
 
 app.use((err, req, res, next) => {
+  console.log(process.env.NODE_ENV)
   const isDevelopment = process.env.NODE_ENV === 'development';
   const statusCode = err.status || 500;
 
