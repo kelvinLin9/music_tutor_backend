@@ -55,7 +55,7 @@ import { handleErrorAsync } from '../statusHandle/handleErrorAsync.js';
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: "https://music-tutor-backend.onrender.com/google/callback", // 使用固定的後端回調 URL
+  callbackURL: "https://music-tutor-backend.onrender.com/users/google/callback", // 使用固定的後端回調 URL
   passReqToCallback: true
 },
 async function(req, accessToken, refreshToken, profile, done) {
