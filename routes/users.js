@@ -25,12 +25,40 @@ const callbackURL = process.env.NODE_ENV === 'production'
   : 'http://localhost:3000/users/google/callback';
   // : 'http://localhost:3000/users/googleClient/callback';
 
+// passport.use(new GoogleStrategy({
+//   clientID: process.env.GOOGLE_CLIENT_ID,
+//   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+//   callbackURL: callbackURL
+// },
+// async function(accessToken, refreshToken, profile, cb) {
+//   console.log("測試")
+//   console.log(profile)
+//   try {
+//     let user = await UsersModel.findOne({ googleId: profile.id });
+//     if (!user) {
+//       user = await UsersModel.create({
+//         googleId: profile.id,
+//         name: profile.displayName,
+//         email: profile.emails[0].value,
+//         photo: profile.photos[0].value,
+//         role: 'user'
+//       });
+//     }
+//     console.log('user', user);
+//     return cb(null, user);
+//   } catch (err) {
+//     return cb(err);
+//   }
+// }
+// ));
+
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: callbackURL
+  callbackURL: "https://music-tutor-backend.onrender.com/google/callback", // 使用固定的後端回調 URL
+  passReqToCallback: true
 },
-async function(accessToken, refreshToken, profile, cb) {
+async function(req, accessToken, refreshToken, profile, done) {
   console.log("測試")
   console.log(profile)
   try {
@@ -45,12 +73,16 @@ async function(accessToken, refreshToken, profile, cb) {
       });
     }
     console.log('user', user);
-    return cb(null, user);
+    // 從 state 參數中獲取前端回調 URL
+    const frontendCallback = req.query.callback;
+    console.log('frontendCallback', frontendCallback)
+    return done(null, { user, frontendCallback });
   } catch (err) {
-    return cb(err);
+    return done(err);
   }
 }
 ));
+
 
 const router = Router();
 
@@ -224,7 +256,20 @@ router.get('/google', passport.authenticate('google', {
 
 router.get('/google/callback', passport.authenticate('google', { session: false }), googleLogin)
 
-router.post('/googleClient/callback', passport.authenticate('google', { session: false }), googleLogin)
+// router.post('/googleClient/callback', passport.authenticate('google', { session: false }), googleLogin)
+
+router.post('/googleClient/callback', 
+  passport.authenticate('google', { session: false, failureRedirect: '/login' }),
+  googleLogin
+  // (req, res) => {
+  //   const { user, frontendCallback } = req.user;
+  //   // 生成 JWT token
+  //   const token = generateToken(user); // 假設你有一個生成 token 的函數
+    
+  //   // 重定向到前端 URL，並帶上 token
+  //   res.redirect(`${frontendCallback}?token=${token}`);
+  // }
+);
 
 export default router;
 
