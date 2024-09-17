@@ -18,12 +18,12 @@ import UsersModel from '../models/user.js'
 import { handleErrorAsync } from '../statusHandle/handleErrorAsync.js';
 
 // google
-const callbackURL = process.env.NODE_ENV === 'production'
-  // ? 'https://kelvinlin9.github.io/music_tutor_dashboard/google/callback'
-  ? 'https://kelvinlin9.github.io/LeLe_Music_Tutor/google/callback'
-  // ? 'http://localhost:3010/music_tutor_dashboard/google/callback'
-  : 'http://localhost:3000/users/google/callback';
-  // : 'http://localhost:3000/users/googleClient/callback';
+// const callbackURL = process.env.NODE_ENV === 'production'
+//   // ? 'https://kelvinlin9.github.io/music_tutor_dashboard/google/callback'
+//   ? 'https://kelvinlin9.github.io/LeLe_Music_Tutor/google/callback'
+//   // ? 'http://localhost:3010/music_tutor_dashboard/google/callback'
+//   : 'http://localhost:3000/users/google/callback';
+//   // : 'http://localhost:3000/users/googleClient/callback';
 
 // passport.use(new GoogleStrategy({
 //   clientID: process.env.GOOGLE_CLIENT_ID,
@@ -250,9 +250,19 @@ router.put('/profile', isAuth, updateInfo);
 router.put('/update-role', isAuth, updateRole)
 
 // google
-router.get('/google', passport.authenticate('google', {
-  scope: [ 'email', 'profile' ],
-}));
+// router.get('/google', passport.authenticate('google', {
+//   scope: [ 'email', 'profile' ],
+// }));
+
+router.get('/google', (req, res, next) => {
+  const { callback } = req.query;
+  console.log('???', callback)
+  passport.authenticate('google', {
+    scope: ['email', 'profile'],
+    state: callback // 使用 state 參數傳遞 callback URL
+  })(req, res, next);
+});
+
 
 router.get('/google/callback', passport.authenticate('google', { session: false }), googleLogin)
 
