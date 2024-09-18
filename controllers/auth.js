@@ -5,6 +5,7 @@ import { handleErrorAsync } from '../statusHandle/handleErrorAsync.js';
 const googleLogin = handleErrorAsync(async (req, res, next) => {
   console.log("googleLogin")
   console.log('req', req.user);
+  console.log('req', req.user._id, req.user.role);
   const token = generateToken({ userId: req.user._id, role: req.user.role })
   // res.send({
   //   status: true,
