@@ -8,7 +8,7 @@ export const generateToken = (user) => {
   // console.log(user)
   // 生成 payload，包括用戶 ID 和角色
   const payload = {      
-      userId: user.userId,
+      userId: user._id,
       role: user.role,
   };
   console.log("Payload:", payload);
