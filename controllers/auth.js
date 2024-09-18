@@ -4,7 +4,7 @@ import { handleErrorAsync } from '../statusHandle/handleErrorAsync.js';
 
 const googleLogin = handleErrorAsync(async (req, res, next) => {
   console.log("googleLogin")
-  console.log('req', req.query.callback);
+  // console.log('req', req.query.callback);
   console.log('req', req.query.state);
   const token = generateToken({ userId: req.user.user._id, role: req.user.user.role })
   // res.send({
@@ -12,7 +12,7 @@ const googleLogin = handleErrorAsync(async (req, res, next) => {
   //   user: req.user,
   //   token: token
   // });
-  res.redirect(`${req.query.callback}?token=${token}`);
+  res.redirect(`${req.query.state}?token=${token}`);
 });
 
 
