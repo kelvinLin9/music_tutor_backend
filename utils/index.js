@@ -5,10 +5,10 @@ export const generateToken = (user) => {
   if (!process.env.JWT_SECRET || !process.env.JWT_EXPIRES_DAY) {
       throw new Error("Required JWT environment variables are not set.");
   }
-  // console.log(user)
+  console.log('user', user)
   // 生成 payload，包括用戶 ID 和角色
   const payload = {      
-      userId: user._id,
+      userId: user.userId,
       role: user.role,
   };
   console.log("Payload:", payload);
