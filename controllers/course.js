@@ -22,7 +22,7 @@ export const createCourse = async (req, res, next) => {
   }
 };
 
-export const getCourse = async (req, res, next) => {
+export const getCourseByID = async (req, res, next) => {
   try {
     const course = await Course.findById(req.params.id)
       .populate('instructor', 'name')
@@ -36,6 +36,20 @@ export const getCourse = async (req, res, next) => {
   }
 };
 
+export const getCoursesByUID = async (req, res, next) => {
+  try {
+    const uid = req.params.uid;
+    const course = await Course.find({ instructor: uid })
+      .populate('instructor', 'name')
+      .populate('reviews')
+      .exec();
+
+    if (!course) throw createHttpError(404, '課程未找到');
+    res.json(course);
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const updateCourse = async (req, res, next) => {
   try {
