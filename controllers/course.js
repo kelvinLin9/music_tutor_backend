@@ -36,21 +36,6 @@ export const getCourseByID = async (req, res, next) => {
   }
 };
 
-export const getCoursesByUID = async (req, res, next) => {
-  try {
-    const uid = req.params.uid;
-    const course = await Course.find({ instructor: uid })
-      .populate('instructor', 'name')
-      .populate('reviews')
-      .exec();
-
-    if (!course) throw createHttpError(404, '課程未找到');
-    res.json(course);
-  } catch (error) {
-    next(error);
-  }
-};
-
 export const updateCourse = async (req, res, next) => {
   try {
     const course = await Course.findByIdAndUpdate(req.params.id, req.body, {
@@ -78,16 +63,22 @@ export const getCourses = async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    const sortBy = req.query.sortBy || 'createdAt'; 
+    const sortBy = req.query.sortBy || 'createdAt';
     const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
-    const filterBy = req.query.filterBy ? JSON.parse(req.query.filterBy) : {};
+    let filterBy = req.query.filterBy ? JSON.parse(req.query.filterBy) : {};
+
+    // 新增：處理特定作者（instructor）的查詢
+    const instructorId = req.query.instructorId;
+    if (instructorId) {
+      filterBy.instructor = instructorId;
+    }
 
     const skip = (page - 1) * limit;
 
     const [courses, totalItems] = await Promise.all([
       Course.find(filterBy)
             .populate('instructor', 'name')
-            .sort({ [sortBy]: sortOrder }) 
+            .sort({ [sortBy]: sortOrder })
             .limit(limit)
             .skip(skip)
             .exec(),
