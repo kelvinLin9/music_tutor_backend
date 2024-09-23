@@ -71,6 +71,7 @@ export const getCourses = async (req, res, next) => {
     const instructorId = req.query.instructorId;
     if (instructorId) {
       filterBy.instructor = instructorId;
+      console.log(instructorId)
     }
 
     const skip = (page - 1) * limit;
