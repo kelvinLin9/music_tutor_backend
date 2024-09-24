@@ -67,11 +67,11 @@ export const getCourses = async (req, res, next) => {
     const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
     let filterBy = req.query.filterBy ? JSON.parse(req.query.filterBy) : {};
 
-    // 新增：處理特定作者（instructor）的查詢
+    // 處理特定作者（instructor）的查詢
     const instructorId = req.query.instructorId;
     if (instructorId) {
       filterBy.instructor = instructorId;
-      console.log(instructorId)
+      console.log(instructorId);
     }
 
     const skip = (page - 1) * limit;
@@ -88,6 +88,10 @@ export const getCourses = async (req, res, next) => {
 
     const totalPages = Math.ceil(totalItems / limit);
 
+    // 計算是否有上一頁和下一頁
+    const hasPrevPage = page > 1;
+    const hasNextPage = page < totalPages;
+
     res.json({
       success: true,
       data: courses,
@@ -95,7 +99,9 @@ export const getCourses = async (req, res, next) => {
         page,
         limit,
         totalPages,
-        totalItems
+        totalItems,
+        hasPrevPage,
+        hasNextPage
       }
     });
   } catch (error) {

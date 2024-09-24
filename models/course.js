@@ -68,6 +68,10 @@ const courseSchema = new Schema({
     ref: 'User',
     required: [true, '老師ID未填寫']
   },
+  students: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  }],
   reviews: [{
     type: Schema.Types.ObjectId,
     ref: 'Review'
