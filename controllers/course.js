@@ -71,15 +71,46 @@ export const getCourses = async (req, res, next) => {
     const instructorId = req.query.instructorId;
     if (instructorId) {
       filterBy.instructor = instructorId;
-      console.log(instructorId);
+    }
+
+    // 處理課程類別（category）的查詢
+    if (req.query.category) {
+      filterBy.category = req.query.category;
+    }
+
+    // 處理上課地點（place）的查詢
+    if (req.query.place) {
+      filterBy.place = req.query.place;
+    }
+
+    // 處理上課模式（mode）的查詢
+    if (req.query.mode) {
+      filterBy.mode = req.query.mode;
+    }
+
+    // 處理課程名稱（name）的查詢
+    if (req.query.name) {
+      filterBy.name = { $regex: req.query.name, $options: 'i' }; // 使用正則表達式進行模糊搜索，不區分大小寫
     }
 
     const skip = (page - 1) * limit;
 
+    // 構建排序對象
+    let sortObject = {};
+    if (sortBy === '依人氣') {
+      sortObject = { 'students.length': sortOrder };
+    } else if (sortBy === '依價格') {
+      sortObject = { price: sortOrder };
+    } else if (sortBy === '依評價') {
+      sortObject = { averageRating: sortOrder };
+    } else {
+      sortObject = { [sortBy]: sortOrder };
+    }
+
     const [courses, totalItems] = await Promise.all([
       Course.find(filterBy)
             .populate('instructor', 'name')
-            .sort({ [sortBy]: sortOrder })
+            .sort(sortObject)
             .limit(limit)
             .skip(skip)
             .exec(),
