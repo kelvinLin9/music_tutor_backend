@@ -61,7 +61,7 @@ passport.use(new GoogleStrategy({
 },
 async function(req, accessToken, refreshToken, profile, done) {
   console.log("測試")
-  console.log(profile)
+  console.log("profile", profile)
   try {
     let user = await UsersModel.findOne({ googleId: profile.id });
     if (!user) {
