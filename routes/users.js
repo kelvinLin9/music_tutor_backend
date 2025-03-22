@@ -55,6 +55,7 @@ import { handleErrorAsync } from '../statusHandle/handleErrorAsync.js';
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  // callbackURL: "https://music-tutor-backend.onrender.com/users/google/callback", // 使用固定的後端回調 URL
   callbackURL: "https://music-tutor-backend.onrender.com/users/google/callback", // 使用固定的後端回調 URL
   passReqToCallback: true
 },
@@ -268,18 +269,37 @@ router.get('/google/callback', passport.authenticate('google', { session: false 
 
 // router.post('/googleClient/callback', passport.authenticate('google', { session: false }), googleLogin)
 
-router.post('/googleClient/callback', 
-  passport.authenticate('google', { session: false, failureRedirect: '/login' }),
-  googleLogin
-  // (req, res) => {
-  //   const { user, frontendCallback } = req.user;
-  //   // 生成 JWT token
-  //   const token = generateToken(user); // 假設你有一個生成 token 的函數
+router.post('/googleClient/callback', (req, res, next) => {
+  // 從請求體獲取授權碼
+  const { code } = req.body;
+  console.log('code', code);
+  if (!code) {
+    return res.status(400).json({
+      success: false, 
+      error: { message: 'Missing auth code' }
+    });
+  }
+  
+  // 將授權碼放入 req.query 中以便 passport-google-oauth20 能使用它
+  req.query = { ...req.query, code };
+  
+  next();
+}, passport.authenticate('google', { session: false }), googleLogin);
+
+
+
+// router.post('/googleClient/callback', 
+//   passport.authenticate('google', { session: false, failureRedirect: '/login' }),
+//   googleLogin,
+//   // (req, res) => {
+//   //   const { user, frontendCallback } = req.user;
+//   //   // 生成 JWT token
+//   //   const token = generateToken(user); // 假設你有一個生成 token 的函數
     
-  //   // 重定向到前端 URL，並帶上 token
-  //   res.redirect(`${frontendCallback}?token=${token}`);
-  // }
-);
+//   //   // 重定向到前端 URL，並帶上 token
+//   //   res.redirect(`${frontendCallback}?token=${token}`);
+//   // }
+// );
 
 export default router;
 
