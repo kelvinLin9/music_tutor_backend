@@ -98,7 +98,8 @@ const couponSchema = new Schema({
     teachers: [{
       type: Schema.Types.ObjectId,
       ref: 'User'
-    }],
+    }]
+  },
   isActive: {
     type: Boolean,
     required: [true, '必須指定是否啟用'],

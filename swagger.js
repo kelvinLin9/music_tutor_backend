@@ -31,7 +31,10 @@ const options = {
             bearerAuth: [],
         }],
     },
-    apis: ['./routes/*.js'], // 指定路由檔案的位置
+    apis: [
+        './routes/*.js',
+        './routes/admin/*.js'
+    ], // 包含所有路由文件
 };
 
 export const specs = swaggerJsdoc(options); 

@@ -128,73 +128,77 @@ const router = Router();
 router.use(checkRequestBodyValidator);
 
 // 登入
-router.post('/login', login);
+router.post('/login', handleErrorAsync(login));
 /**
- * #swagger.description = "登入"
- * #swagger.parameters['body'] = {
- *     in: 'body',
- *     required: true,
- *     schema: {
- *         email: "timmothy.ramos@example.com",
- *         password: "Dirt5528295",
- *     }
- * }
- * #swagger.responses[200] = {
- *     description: '登入成功',
- *     schema: {
- *         "status": true,
- *         "token": "eyJhbGciOiJI....",
- *         "user": {
- *             "_id": "6533f0ef4cdf5b7f762747b0",
- *             "email": "timmothy.ramos@example.com",
- *         }
- *     }
- * }
- * #swagger.responses[400] = {
- *     description: '登入失敗，密碼錯誤',
- *     schema: {
- *         "status": false,
- *         "message": "密碼錯誤",
- *     }
- * }
- * #swagger.responses[404] = {
- *     schema: {
- *         "status": false,
- *         "message": "此使用者不存在",
- *     }
- * }
+ * @swagger
+ * /api/users/login:
+ *   post:
+ *     tags:
+ *       - 用戶管理
+ *     summary: 用戶登入
+ *     description: 用戶登入系統
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: 電子郵件
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 description: 密碼
+ *     responses:
+ *       200:
+ *         description: 登入成功
+ *       401:
+ *         description: 認證失敗
  */
 
 // 註冊
-router.post('/signup', signup);
+router.post('/signup', handleErrorAsync(signup));
 /**
- * #swagger.description = "註冊"
- * #swagger.parameters['body'] = {
- *     in: 'body',
- *     required: true,
- *     schema: {
- *         email: "lori.murphy@example.com",
- *         password: "YourPassword",
- *     }
- * }
- * #swagger.responses[200] = {
- *     description: '註冊成功',
- *     schema: {
- *         "status": true,
- *         "token": "eyJhbGciOiJI....",
- *         "user": {
- *             "_id": "6533f0ef4cdf5b7f762747b0",
- *             "email": "lori.murphy@example.com",
- *         }
- *     }
- * }
- * #swagger.responses[400] = {
- *     description: '註冊失敗，Email已被註冊',
- *     schema: {
- *         "status": false,
- *         "message": "此 Email 已註冊",
- *     }
- * }
+ * @swagger
+ * /api/users/signup:
+ *   post:
+ *     tags:
+ *       - 用戶管理
+ *     summary: 用戶註冊
+ *     description: 創建新用戶帳號
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - email
+ *               - password
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: 用戶名稱
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: 電子郵件
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 description: 密碼
+ *     responses:
+ *       201:
+ *         description: 註冊成功
+ *       400:
+ *         description: 請求格式錯誤
  */
 
 // 忘記密碼
@@ -237,54 +241,58 @@ router.get('/check', isAuth, check);
  */
 
 // 取得使用者資訊
-router.get('/profile', isAuth, getUser);
+router.get('/profile', isAuth, handleErrorAsync(getUser));
 /**
- * #swagger.description = "取得使用者資訊"
- * #swagger.responses[200] = {
- *     schema: {
- *         "status": true,
- *         "user": {
- *             "_id": "6533f0ef4cdf5b7f762747b0",
- *             "email": "timmothy.ramos@example.com",
- *             "name": "Lori Murphy",
- *             "phone": "(663) 742-3828",
- *             "birthday": "1982-02-03T16:00:00.000Z",
- *         }
- *     }
- * }
+ * @swagger
+ * /api/users/profile:
+ *   get:
+ *     tags:
+ *       - 用戶管理
+ *     summary: 獲取用戶資料
+ *     description: 獲取當前登入用戶的資料
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: 成功獲取用戶資料
+ *       401:
+ *         description: 未授權
  */
 
 // 更新使用者資訊
-router.put('/profile', isAuth, updateInfo);
+router.put('/profile', isAuth, checkRequestBodyValidator, handleErrorAsync(updateInfo));
 /**
- * #swagger.description = "更新使用者資訊"
- * #swagger.parameters['body'] = {
- *     in: 'body',
- *     required: true,
- *     schema: {
- *         userId: "6523e9fc3a22dd8d8207ef80",
- *         name: "Kylie Stanley",
- *         phone: "(937) 233-2482",
- *         birthday: "1948/6/5",
- *         address: {
- *             detail: "文山路23號",
- *         },
- *         oldPassword: "舊密碼",
- *         newPassword: "新密碼",
- *     }
- * }
- * #swagger.responses[400] = {
- *     schema: {
- *         "status": false,
- *         "message": "密碼錯誤",
- *     }
- * }
- * #swagger.responses[404] = {
- *     schema: {
- *         "status": false,
- *         "message": "此使用者不存在",
- *     }
- * }
+ * @swagger
+ * /api/users/profile:
+ *   put:
+ *     tags:
+ *       - 用戶管理
+ *     summary: 更新用戶資料
+ *     description: 更新當前登入用戶的資料
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: 用戶名稱
+ *               phone:
+ *                 type: string
+ *                 description: 電話號碼
+ *               birthday:
+ *                 type: string
+ *                 format: date
+ *                 description: 生日
+ *     responses:
+ *       200:
+ *         description: 更新成功
+ *       401:
+ *         description: 未授權
  */
 router.put('/update-role', isAuth, updateRole)
 

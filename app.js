@@ -8,9 +8,10 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import swaggerUi from 'swagger-ui-express';
 import { specs } from './swagger.js';
+import { auth } from './middlewares/auth.js';
 
 // 引入路由
-import userRouter from './routes/user.js';
+import userRouter from './routes/users.js';
 import courseRouter from './routes/course.js';
 import verifyRouter from './routes/verify.js';
 import uploadRouter from './routes/upload.js';
@@ -23,7 +24,7 @@ import materialRouter from './routes/material.js';
 import teacherAvailabilityRouter from './routes/teacherAvailability.js';
 
 // 管理員路由
-import adminUserRouter from './routes/admin/user.js';
+import adminUserRouter from './routes/admin/users.js';
 
 const app = express();
 

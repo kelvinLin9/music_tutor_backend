@@ -1,6 +1,6 @@
 import express from 'express';
 import { addReview, getReview, updateReview, deleteReview, getReviews } from '../controllers/courseReview.js';
-import { isAuth } from '../middleware/auth.js';
+import { auth } from '../middlewares/auth.js';
 
 const router = express.Router();
 
@@ -76,7 +76,7 @@ const router = express.Router();
  *       401:
  *         description: 未授權
  */
-router.post('/', isAuth, addReview);
+router.post('/', auth, addReview);
 
 /**
  * @swagger
@@ -97,7 +97,7 @@ router.post('/', isAuth, addReview);
  *       404:
  *         description: 課程不存在
  */
-router.get('/:courseId', isAuth, getReviews);
+router.get('/:courseId', auth, getReviews);
 
 /**
  * @swagger
@@ -118,7 +118,7 @@ router.get('/:courseId', isAuth, getReviews);
  *       404:
  *         description: 評價不存在
  */
-router.get('/:id', isAuth, getReview);
+router.get('/:id', auth, getReview);
 
 /**
  * @swagger
@@ -156,7 +156,7 @@ router.get('/:id', isAuth, getReview);
  *       401:
  *         description: 未授權
  */
-router.put('/:id', isAuth, updateReview);
+router.put('/:id', auth, updateReview);
 
 /**
  * @swagger
@@ -181,6 +181,6 @@ router.put('/:id', isAuth, updateReview);
  *       401:
  *         description: 未授權
  */
-router.delete('/:id', isAuth, deleteReview);
+router.delete('/:id', auth, deleteReview);
 
 export default router;
