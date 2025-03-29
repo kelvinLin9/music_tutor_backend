@@ -67,6 +67,7 @@ app.use('/api/admin/users', adminUserRouter);
 
 // 錯誤處理中間件
 app.use((err, req, res, next) => {
+  console.log('process.env.NODE_ENV', process.env.NODE_ENV)
   const isDevelopment = process.env.NODE_ENV === 'development';
   const statusCode = err.status || 500;
 
