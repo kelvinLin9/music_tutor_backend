@@ -3,9 +3,10 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const appointmentSchema = new Schema({
+    // 基本資訊
     teacher: {
         type: Schema.Types.ObjectId,
-        ref: 'User', // 假定 User 模型用於老師和學生
+        ref: 'User',
         required: true
     },
     student: {
@@ -15,9 +16,20 @@ const appointmentSchema = new Schema({
     },
     course: {
         type: Schema.Types.ObjectId,
-        ref: 'Course', // 參考你的課程模型
+        ref: 'Course',
         required: true
     },
+    order: {
+        type: Schema.Types.ObjectId,
+        ref: 'Order',
+        required: true
+    },
+    orderItem: {
+        type: Schema.Types.ObjectId,
+        required: true
+    },
+    
+    // 時間資訊
     startTime: {
         type: Date,
         required: true
@@ -26,20 +38,166 @@ const appointmentSchema = new Schema({
         type: Date,
         required: true
     },
-    teacherColor: {
-        primary: { type: String, default: '#0000FF' }, // 主色
-        secondary: { type: String, default: '#00FFFF' } // 次要色
-    },
-    studentColor: {
-        primary: { type: String, default: '#FF0000' }, // 主色
-        secondary: { type: String, default: '#FFC0CB' } // 次要色
-    },
-    notes: {
+    
+    // 上課狀態
+    status: {
         type: String,
-        maxlength: 500 // 允許老師或學生添加備註
-    }
+        enum: [
+            'scheduled',    // 已預約
+            'confirmed',    // 老師已確認
+            'in_progress', // 上課中
+            'completed',   // 已完成
+            'cancelled',   // 已取消
+            'missed'       // 未出席
+        ],
+        default: 'scheduled',
+        required: true
+    },
+    
+    // 上課地點
+    location: {
+        type: {
+            type: String,
+            enum: ['在學生家', '在老師家', '線上'],
+            required: true
+        },
+        address: String,
+        onlineLink: String
+    },
+    
+    // 課程內容
+    lessonContent: {
+        title: String,
+        description: String,
+        materials: [{
+            type: String,
+            url: String,
+            description: String
+        }],
+        homework: {
+            description: String,
+            dueDate: Date
+        }
+    },
+    
+    // 課後評價
+    feedback: {
+        teacher: {
+            rating: {
+                type: Number,
+                min: 1,
+                max: 5
+            },
+            comment: String,
+            submittedAt: Date
+        },
+        student: {
+            rating: {
+                type: Number,
+                min: 1,
+                max: 5
+            },
+            comment: String,
+            submittedAt: Date
+        }
+    },
+    
+    // 出席記錄
+    attendance: {
+        studentPresent: {
+            type: Boolean,
+            default: null
+        },
+        teacherPresent: {
+            type: Boolean,
+            default: null
+        },
+        recordedAt: Date
+    },
+    
+    // 筆記和備註
+    notes: {
+        teacher: {
+            type: String,
+            maxlength: 1000
+        },
+        student: {
+            type: String,
+            maxlength: 1000
+        },
+        internal: {
+            type: String,
+            maxlength: 1000
+        }
+    },
+    
+    // 取消/改期記錄
+    rescheduling: [{
+        originalTime: {
+            start: Date,
+            end: Date
+        },
+        requestedBy: {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        reason: String,
+        requestedAt: Date,
+        status: {
+            type: String,
+            enum: ['pending', 'approved', 'rejected'],
+            default: 'pending'
+        }
+    }],
+    
+    // 系統記錄
+    logs: [{
+        action: {
+            type: String,
+            required: true
+        },
+        performedBy: {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        timestamp: {
+            type: Date,
+            default: Date.now
+        },
+        description: String
+    }]
 }, {
-    timestamps: true // 自動添加創建和更新的時間戳
+    timestamps: true
+});
+
+// 索引
+appointmentSchema.index({ teacher: 1, startTime: 1 });
+appointmentSchema.index({ student: 1, startTime: 1 });
+appointmentSchema.index({ status: 1, startTime: 1 });
+appointmentSchema.index({ order: 1, orderItem: 1 });
+
+// 驗證時間
+appointmentSchema.pre('save', function(next) {
+    if (this.startTime >= this.endTime) {
+        next(new Error('結束時間必須晚於開始時間'));
+    }
+    next();
+});
+
+// 更新課程剩餘堂數
+appointmentSchema.post('save', async function(doc) {
+    if (doc.status === 'completed') {
+        const Order = mongoose.model('Order');
+        await Order.findOneAndUpdate(
+            { 
+                _id: doc.order,
+                'items._id': doc.orderItem 
+            },
+            { 
+                $inc: { 'items.$.remainingLessons': -1 } 
+            }
+        );
+    }
 });
 
 export default mongoose.model('Appointment', appointmentSchema);

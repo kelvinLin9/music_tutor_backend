@@ -15,7 +15,7 @@ import verifyRouter from './routes/verify.js';
 import uploadRouter from './routes/upload.js';
 import couponRouter from './routes/coupon.js';
 import orderRouter from './routes/order.js';
-import reviewRouter from './routes/review.js';
+import courseReviewRouter from './routes/courseReview.js';
 import appointmentRouter from './routes/appointment.js';
 
 // admin
@@ -56,7 +56,7 @@ app.use('/verify', verifyRouter);
 app.use('/upload', uploadRouter);
 app.use('/coupons', couponRouter);
 app.use('/orders', orderRouter);
-app.use('/reviews', reviewRouter);
+app.use('/reviews', courseReviewRouter);
 app.use('/appointments', appointmentRouter);
 // admin
 app.use('/admin/users', adminUsersRouter);
