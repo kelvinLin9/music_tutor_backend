@@ -55,26 +55,64 @@ import { handleErrorAsync } from '../statusHandle/handleErrorAsync.js';
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  // callbackURL: "https://music-tutor-backend.onrender.com/users/google/callback", // 使用固定的後端回調 URL
-  callbackURL: "https://music-tutor-backend.onrender.com/users/google/callback", // 使用固定的後端回調 URL
+  callbackURL: "https://music-tutor-backend.onrender.com/users/google/callback",
   passReqToCallback: true
 },
 async function(req, accessToken, refreshToken, profile, done) {
   console.log("測試")
   console.log("profile", profile)
   try {
-    let user = await UsersModel.findOne({ googleId: profile.id });
+    // 先尋找是否有使用 Google 登入的用戶
+    let user = await UsersModel.findOne({ 
+      'oauthProviders.provider': 'google',
+      'oauthProviders.providerId': profile.id 
+    });
+
     if (!user) {
-      user = await UsersModel.create({
-        googleId: profile.id,
-        name: profile.displayName,
-        email: profile.emails[0].value,
-        photo: profile.photos[0].value,
-        role: 'user'
-      });
+      // 如果沒有找到，則尋找是否有相同 email 的用戶
+      user = await UsersModel.findOne({ email: profile.emails[0].value });
+      
+      if (user) {
+        // 如果找到相同 email 的用戶，添加 Google OAuth 資訊
+        await user.addOAuthProvider(
+          'google',
+          profile.id,
+          accessToken,
+          refreshToken,
+          new Date(Date.now() + 3600000) // 1小時後過期
+        );
+        await user.save();
+      } else {
+        // 如果都沒有找到，創建新用戶
+        user = await UsersModel.create({
+          name: profile.displayName,
+          email: profile.emails[0].value,
+          photo: profile.photos[0].value,
+          role: 'user'
+        });
+        
+        await user.addOAuthProvider(
+          'google',
+          profile.id,
+          accessToken,
+          refreshToken,
+          new Date(Date.now() + 3600000) // 1小時後過期
+        );
+        await user.save();
+      }
+    } else {
+      // 如果找到用戶，更新 OAuth 資訊
+      await user.addOAuthProvider(
+        'google',
+        profile.id,
+        accessToken,
+        refreshToken,
+        new Date(Date.now() + 3600000) // 1小時後過期
+      );
+      await user.save();
     }
+
     console.log('user', user);
-    // 從 state 參數中獲取前端回調 URL
     const frontendCallback = req.query.callback;
     console.log('frontendCallback', frontendCallback)
     return done(null, { user, frontendCallback });

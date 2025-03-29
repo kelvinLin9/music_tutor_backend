@@ -2,6 +2,30 @@ import { Schema, model } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 
+const oauthProviderSchema = new Schema({
+    provider: {
+        type: String,
+        enum: ['google', 'facebook', 'line', 'apple', 'github'],
+        required: true
+    },
+    providerId: {
+        type: String,
+        required: true
+    },
+    accessToken: {
+        type: String,
+        select: false
+    },
+    refreshToken: {
+        type: String,
+        select: false
+    },
+    tokenExpiresAt: {
+        type: Date,
+        select: false
+    }
+}, { _id: false });
+
 const userSchema = new Schema({
     name: {
         type: String,
@@ -25,15 +49,15 @@ const userSchema = new Schema({
         }
     },
     password: {
-      type: String,
-      minlength: 8,
-      select: false
-    },
-    googleId: {
         type: String,
-        unique: true,
-        sparse: true
+        minlength: 8,
+        select: false,
+        required: function() {
+            // 如果沒有 OAuth 認證，則密碼為必填
+            return !this.oauthProviders || this.oauthProviders.length === 0;
+        }
     },
+    oauthProviders: [oauthProviderSchema],
     phone: {
         type: String,
         validate: {
@@ -47,9 +71,9 @@ const userSchema = new Schema({
         type: Date
     },
     address: {
-      type: { 
-        detail: String 
-      }
+        type: { 
+            detail: String 
+        }
     },
     gender: {
         type: String,
@@ -118,20 +142,36 @@ const userSchema = new Schema({
 });
 
 // 密碼加密和電郵格式化的 pre-save 鉤子
-// userSchema.pre('save', async function(next) {
-//     if (this.isModified('password')) {
-//         this.password = await bcrypt.hash(this.password, 12);
-//     }
-//     this.email = this.email.toLowerCase().trim();
-//     next();
-// });
-
 userSchema.pre('save', async function(next) {
-  if (this.isModified('password') && this.password) {
-      this.password = await bcrypt.hash(this.password, 12);
-  }
-  this.email = this.email.toLowerCase().trim();
-  next();
+    if (this.isModified('password') && this.password) {
+        this.password = await bcrypt.hash(this.password, 12);
+    }
+    this.email = this.email.toLowerCase().trim();
+    next();
 });
+
+// 新增方法：檢查是否使用特定 OAuth 提供者
+userSchema.methods.hasOAuthProvider = function(provider) {
+    return this.oauthProviders.some(oauth => oauth.provider === provider);
+};
+
+// 新增方法：新增 OAuth 提供者
+userSchema.methods.addOAuthProvider = function(provider, providerId, accessToken, refreshToken, tokenExpiresAt) {
+    const existingProvider = this.oauthProviders.find(oauth => oauth.provider === provider);
+    if (existingProvider) {
+        existingProvider.providerId = providerId;
+        existingProvider.accessToken = accessToken;
+        existingProvider.refreshToken = refreshToken;
+        existingProvider.tokenExpiresAt = tokenExpiresAt;
+    } else {
+        this.oauthProviders.push({
+            provider,
+            providerId,
+            accessToken,
+            refreshToken,
+            tokenExpiresAt
+        });
+    }
+};
 
 export default model('User', userSchema);

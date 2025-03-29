@@ -28,13 +28,26 @@ const googleLogin = handleErrorAsync(async (req, res, next) => {
     });
   }
   
-  const token = generateToken({ userId: req.user.user._id, role: req.user.user.role });
+  // 生成 token，包含用戶 ID 和角色
+  const token = generateToken({ 
+    userId: req.user.user._id, 
+    role: req.user.user.role 
+  });
+  
+  // 準備返回的用戶資料
+  const userData = {
+    _id: req.user.user._id,
+    name: req.user.user.name,
+    email: req.user.user.email,
+    photo: req.user.user.photo,
+    role: req.user.user.role
+  };
   
   // 如果是 POST 請求 (直接從前端發來的)
   if (req.method === 'POST') {
     return res.json({
       success: true,
-      user: req.user.user,
+      user: userData,
       token: token
     });
   }

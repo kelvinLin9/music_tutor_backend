@@ -1,0 +1,251 @@
+/* 登入頁面樣式 */
+.login-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: white;
+}
+
+.traditional-login {
+  margin-bottom: 1.5rem;
+}
+
+.traditional-login h2 {
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #333;
+}
+
+.traditional-login form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.traditional-login input {
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.traditional-login button {
+  padding: 0.8rem;
+  background: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.traditional-login button:hover {
+  background: #357abd;
+}
+
+/* 分隔線樣式 */
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #ddd;
+}
+
+.divider span {
+  padding: 0 1rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* 社交登入按鈕樣式 */
+.social-login {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.social-login button {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.social-login button:hover {
+  background-color: #f5f5f5;
+}
+
+.social-login button img {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+/* 設定頁面樣式 */
+.settings-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.profile-section,
+.connected-accounts {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-section h2,
+.connected-accounts h2 {
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.profile-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-info h3 {
+  margin: 0;
+  color: #333;
+}
+
+.profile-info p {
+  margin: 0.5rem 0 0;
+  color: #666;
+}
+
+/* 帳號列表樣式 */
+.accounts-list {
+  margin-bottom: 2rem;
+}
+
+.account-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.account-item:last-child {
+  border-bottom: none;
+}
+
+.provider-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 1rem;
+}
+
+.provider-name {
+  flex: 1;
+  text-transform: capitalize;
+}
+
+.disconnect-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ff4444;
+  color: #ff4444;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.disconnect-btn:hover {
+  background: #ff4444;
+  color: white;
+}
+
+/* 連接帳號按鈕樣式 */
+.available-accounts {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.connect-btn {
+  padding: 0.8rem 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.connect-btn:hover {
+  background-color: #f5f5f5;
+}
+
+.connect-btn img {
+  width: 20px;
+  height: 20px;
+}
+
+/* 載入中樣式 */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  font-size: 1.1rem;
+  color: #666;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .login-container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .settings-container {
+    margin: 1rem;
+    padding: 0;
+  }
+
+  .profile-info {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .account-item {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .disconnect-btn {
+    width: 100%;
+  }
+} 
