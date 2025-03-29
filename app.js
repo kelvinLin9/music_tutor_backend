@@ -6,6 +6,8 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import swaggerUi from 'swagger-ui-express';
+import { specs } from './swagger.js';
 
 // 引入路由
 import userRouter from './routes/user.js';
@@ -48,6 +50,9 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // API 路由
 app.use('/api/users', userRouter);
