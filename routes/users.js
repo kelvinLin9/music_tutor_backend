@@ -113,14 +113,13 @@ async function(req, accessToken, refreshToken, profile, done) {
     }
 
     console.log('user', user);
-    const frontendCallback = req.query.callback;
+    const frontendCallback = req.query.state;
     console.log('frontendCallback', frontendCallback)
     return done(null, { user, frontendCallback });
   } catch (err) {
     return done(err);
   }
-}
-));
+}));
 
 
 const router = Router();
@@ -296,22 +295,21 @@ router.put('/profile', isAuth, checkRequestBodyValidator, handleErrorAsync(updat
  */
 router.put('/update-role', isAuth, updateRole)
 
-// google
-// router.get('/google', passport.authenticate('google', {
-//   scope: [ 'email', 'profile' ],
-// }));
-
+// Google 登入路由
 router.get('/google', (req, res, next) => {
   const { callback } = req.query;
-  console.log('???', callback)
+  console.log('Callback URL:', callback);
   passport.authenticate('google', {
     scope: ['email', 'profile'],
     state: callback // 使用 state 參數傳遞 callback URL
   })(req, res, next);
 });
 
-
-router.get('/google/callback', passport.authenticate('google', { session: false }), googleLogin)
+// Google 回調路由
+router.get('/google/callback', 
+  passport.authenticate('google', { session: false }), 
+  googleLogin
+);
 
 // router.post('/googleClient/callback', passport.authenticate('google', { session: false }), googleLogin)
 
