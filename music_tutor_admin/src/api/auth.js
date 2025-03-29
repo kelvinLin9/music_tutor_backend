@@ -8,8 +8,7 @@ export const authApi = {
 
   // Google 登入
   googleLogin() {
-    const baseUrl = window.location.origin;
-    const redirectTarget = `${baseUrl}/users/google/callback`;
+    const redirectTarget = 'https://kelvinlin9.github.io/music_tutor_dashboard/google/callback';
     const apiUrl = import.meta.env.VITE_API_URL;
     
     if (!apiUrl) {
