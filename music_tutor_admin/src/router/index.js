@@ -9,7 +9,7 @@ const routes = [
     meta: { requiresAuth: false }
   },
   {
-    path: '/users/google',
+    path: '/google/callback',
     name: 'google-callback',
     component: () => import('@/views/GoogleCallback.vue'),
     meta: { requiresAuth: false }
