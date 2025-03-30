@@ -55,7 +55,7 @@ import { handleErrorAsync } from '../statusHandle/handleErrorAsync.js';
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: 'https://kelvinlin9.github.io/music_tutor_dashboard/google/callback',
+  callbackURL: 'https://kelvinlin9.github.io/music_tutor_dashboard/api/users/google/callback',
   passReqToCallback: true
 },
 async function(req, accessToken, refreshToken, profile, done) {
