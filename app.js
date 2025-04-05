@@ -1,8 +1,10 @@
-import dotenv from 'dotenv';
-dotenv.config();
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
+
+// 自己裝
+import dotenv from 'dotenv';
+dotenv.config();
 import helmet from 'helmet';
 import cors from 'cors';
 import mongoose from 'mongoose';
